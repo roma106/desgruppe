@@ -1,0 +1,128 @@
+package pages
+
+import "desgruppe/internal/templ/views/layout"
+
+// import "desgruppe/internal/templ/views/components"
+import "strconv"
+import "desgruppe/internal/entities"
+
+type CartPageProps struct {
+	ExRate float64
+	Cart   layout.UserCart
+}
+
+templ CartPage(props CartPageProps) {
+	@layout.UserPageLayout(layout.UserLayoutProps{
+		Title:   "desGruppe - Корзина",
+		Styles:  []string{"cart-style.css"},
+		Scripts: []string{"cart-page.js"},
+		Cart:    props.Cart,
+	}) {
+		<h1 class="title">Ваша Корзина</h1>
+		<div class="main-container">
+			<table class="items-table">
+				<thead class="items-head">
+					<tr class="items-header">
+						<th class="items-th">Товар</th>
+						<th class="items-th">Цена</th>
+						<th class="items-th">Кол-во</th>
+						<th class="items-th items-total">Итог</th>
+					</tr>
+				</thead>
+				<tbody class="items-body">
+					for i, pr := range props.Cart.Products {
+						<tr class="items-elem">
+							<td class="items-td">
+								<a href={ "/product/" + pr.Slug } class="items-a">
+									<div class="items-elem-name">
+										<div class="items-elem-img-container">
+											<img src={ "/products/getImgBlob/Photo/" + strconv.Itoa(pr.ID) } alt="" class="items-elem-img"/>
+										</div>
+										<div class="items-elem-name-container">
+											<p class="items-elem-name-text">{ pr.Name }</p>
+											<p class="items-elem-designer">Charles & Ray Eames</p>
+											<p class="items-elem-color-text">Цвет:</p>
+											<p class="items-elem-color">{ props.Cart.Colors[i] }</p>
+										</div>
+									</div>
+								</a>
+							</td>
+							<td class="items-td">
+								<p class="item-elem-price-rub">{ FormatPrice(props.ExRate*float64(pr.Price)) } ₽</p>
+							</td>
+							<td class="items-td">
+								<div class="items-elem-qty-container">
+									<div class="item-elem-qty">
+										<button class="item-elem-qty-less">-</button>
+										<div class="item-elem-qty-cnt">{ props.Cart.Qtys[i] }</div>
+										<button class="item-elem-qty-more">+</button>
+									</div>
+									<p class="item-elem-remove-button">Удалить</p>
+								</div>
+							</td>
+							<td class="items-td items-total">
+								<p class="item-elem-total-rub">{ FormatPrice(props.ExRate*float64(pr.Price)*float64(props.Cart.Qtys[i])) } ₽</p>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+			<div class="total-container">
+				<h3 class="total-title">Заказ</h3>
+				<div class="total-block">
+					<p class="total-text">Цена</p>
+					<p class="total-text total-price">{ FormatPrice(CountTotal(props.Cart.Products, props.Cart.Qtys, props.ExRate)) } Р</p>
+				</div>
+				<div class="total-block">
+					<p class="total-text">Скидка</p>
+					<p class="total-text total-sale">{ FormatPrice(CountTotalSale(props.Cart.Products, props.Cart.Qtys, props.ExRate)) } Р</p>
+				</div>
+				<div class="total-send-block">
+					<div class="total-block">
+						<input type="text" class="total-input total-name" placeholder="Контактное лицо *"/>
+					</div>
+					<div class="total-block">
+						<input type="text" class="total-input total-phone" placeholder="Телефон *"/>
+					</div>
+					<div class="total-block">
+						<input type="text" class="total-input total-email" placeholder="Эл. почта *"/>
+					</div>
+					<div class="total-comment-block">
+						<p class="total-comment-label">Комментарий</p>
+						<textarea class="total-comment"></textarea>
+					</div>
+					<div class="total-block">
+						<p class="total-send-price">Итого</p>
+						<p class="total-send-price total-send">{ FormatPrice(CountTotal(props.Cart.Products, props.Cart.Qtys, props.ExRate)-CountTotalSale(props.Cart.Products, props.Cart.Qtys, props.ExRate)) } Р</p>
+					</div>
+					<p class="total-wrong-data hidden">Введите корректные данные</p>
+					<button class="total-send-button">Отправить</button>
+				</div>
+			</div>
+		</div>
+		<div class="cart-end-bg hidden"></div>
+		<div class="cart-end-panel cart-end-panel-hidden">
+			<button class="cart-end-close-button">×</button>
+			<div class="cart-end-container">
+				<img src="imgs/icons/tick-icon.png" alt="" class="cart-end-tick-img"/>
+				<h2 class="cart-end-title">Спасибо за заказ!</h2>
+				<p class="cart-end-text">Мы свяжемся с Вами в ближайшее время.</p>
+			</div>
+		</div>
+	}
+}
+
+func CountTotal(products []entities.Product, qtys []int, exRate float64) float64 {
+	res := 0.0
+	for i, pr := range products {
+		res += float64(pr.Price) * float64(qtys[i]) * exRate
+	}
+	return res
+}
+func CountTotalSale(products []entities.Product, qtys []int, exRate float64) float64 {
+	res := 0.0
+	for i, pr := range products {
+		res += float64(pr.Price) * float64(qtys[i]) * exRate * float64(pr.Sale/100)
+	}
+	return res
+}

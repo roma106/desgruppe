@@ -1,0 +1,77 @@
+package components
+
+import (
+	"desgruppe/internal/entities"
+	"strconv"
+    "strings"
+    "github.com/dustin/go-humanize"
+    "fmt"
+)
+
+templ CartPanel(products []entities.Product, colors []string, qtys []int, exRate float64) {
+	<div class="cart-panel">
+		<div class="cart-container">
+			<div class="cart-title-container">
+				<h3 class="cart-title">Корзина</h3>
+				<button class="cart-close-button">×</button>
+			</div>
+			if len(products)==0 {
+				<p class="cart-empty-text">Ваша корзина пуста.</p>
+			}
+			<div class="cart-items-container">
+				<ul class="cart-items">
+					for i, pr := range products {
+						<li class="cart-item">
+							<div class="cart-item-img-container">
+								<img src={ "/products/getImgBlob/Photo/" + strconv.Itoa(pr.ID) } alt="" class="cart-item-img"/>
+							</div>
+							<div class="cart-item-name-container">
+								<p class="cart-item-name">{ pr.Name }</p>
+								<p class="cart-item-color">Цвет: { colors[i] }</p>
+							</div>
+							<div class="cart-item-price-container">
+								<p class="cart-item-price-rub">{ FormatPrice(exRate*pr.Price*float64(qtys[i])) } ₽</p>
+							</div>
+							<div class="cart-item-qty-container">
+								<div class="cart-item-qty">
+									<button class="cart-item-qty-less">-</button>
+									<div class="cart-item-qty-cnt" id={pr.ID}>{ qtys[i] }</div>
+									<button class="cart-item-qty-more">+</button>
+								</div>
+								<p class="cart-item-remove-button" id={pr.ID}>Удалить</p>
+							</div>
+						</li>
+					}
+				</ul>
+			</div>
+			<div class="cart-total-container">
+				<div class="cart-total-text-container">
+					<p class="cart-total-text">Итого</p>
+					<p class="cart-total">{ FormatPrice(exRate*Sum(products, qtys)) } ₽</p>
+				</div>
+				<div class="cart-button-container">
+					<button class="go-to-cart-button">Перейти к оформлению</button>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+
+func Sum(is []entities.Product, qty []int)float64{
+    res := 0.0
+    for ind, i := range is{
+        res+=i.Price*float64(qty[ind])
+    }
+    return res
+}
+
+
+func FormatPrice(value float64) string {
+	// humanize добавляет запятые, заменяем на пробелы
+	intStr := humanize.Commaf(float64(int64(value)))
+	intStr = strings.ReplaceAll(intStr, ",", " ")
+	frac := value - float64(int64(value))
+	return fmt.Sprintf("%s.%02d", intStr, int64(frac*100))
+}
+

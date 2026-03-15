@@ -1,0 +1,128 @@
+package layout
+
+import "desgruppe/internal/entities"
+
+import "desgruppe/internal/templ/views/components"
+
+type UserLayoutProps struct {
+	Title   string
+	Cart    UserCart
+	Styles  []string
+	Scripts []string
+}
+
+type UserCart struct {
+	Products []entities.Product
+	Colors   []string
+	Qtys     []int
+	ExRate   float64
+}
+
+templ UserPageLayout(props UserLayoutProps) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="yandex-verification" content="034d2326f768b4cc" />
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<meta name="description" content="Сайт компании desGruppe посвящён дизайнерским предметам интерьера: эксклюзивная мебель, оригинальные светильники, великолепные раковины и зеркала из бронзы, стулья, диваны для дома и офиса, красочные и деловые. Индивидуальные дизайн-проекты позволят вам воплотить любую мечту интерьера в жизнь"/>
+			<meta http-equiv="keywords" content="мебель, дизайн-проект, светильники, раковины, зеркала, бронза, интерьер">
+			<meta property="og:title" content={props.Title}>
+			<title>{ props.Title }</title>
+			<link rel="icon" href="imgs/favicon.ico" type="image/icon"/>
+			<link rel="shortcut icon" href="imgs/favicon.ico" type="image/icon"/>
+			<link rel="stylesheet" href="/static/style/header-style.css"/>
+			<link rel="stylesheet" href="../../static/style/shop-item-style.css"/>
+			for _,st := range props.Styles {
+				<link rel="stylesheet" href={ "../../static/style/" + st }/>
+			}
+		</head>
+		<body class="body">
+			<header class="header">
+				<div class="header-title">
+					<a href="/" class="header-logo-a">
+						<span class="header-logo-main">desGruppe</span>
+						<span class="header-logo-text">Дизайнерские предметы интерьера</span>
+					</a>
+					<div class="header-title-panel">
+						<div class="header-search-container">
+							<input type="text" class="header-search-input" placeholder="Поиск"/>
+							<button class="header-search-button">
+								<img src="imgs/icons/search-icon.png" alt="" class="header-search-button-img"/>
+							</button>
+						</div>
+						<a class="header-cart-container">
+							<img src="imgs/icons/cart-icon.png" alt="" class="header-cart-img"/>
+							if len(props.Cart.Products)==0 {
+								<div class="header-cart-cnt"></div>
+							} else {
+								<div class="header-cart-cnt">{ Sum(props.Cart.Qtys) }</div>
+							}
+						</a>
+						<div class="header-burger-container">
+							<img src="imgs/icons/burger-menu-icon.png" alt="" class="header-burger-img"/>
+						</div>
+					</div>
+				</div>
+				<nav class="header-nav">
+					<ul class="header-nav-ul">
+						<li class="header-nav-li"><a href="/furniture" class="header-nav-a">Мебель</a></li>
+						<li class="header-nav-li"><a href="/light" class="header-nav-a">Свет</a></li>
+						<li class="header-nav-li"><a href="/interior" class="header-nav-a">Аксессуары</a></li>
+						<li class="header-nav-li"><a href="/designers" class="header-nav-a">Дизайнеры</a></li>
+						<li class="header-nav-li"><a href="/producers" class="header-nav-a">Фабрики</a></li>
+						<li class="header-nav-li"><a href="/available" class="header-nav-a">Наличие</a></li>
+						<li class="header-nav-li"><a href="/contacts" class="header-nav-a">Контакты</a></li>
+					</ul>
+				</nav>
+			</header>
+			<main class="main">
+				{ children... }
+			</main>
+			<footer class="footer">
+				<div class="footer-block">
+					<div class="footer-contacts-container">
+						<div class="footer-contacts">
+							<a href="tel:+74957613505" class="footer-contact">+7 495 761-35-05</a>
+							<a href="mailto:info@desgruppe.ru" class="footer-contact">info@desgruppe.ru</a>
+						</div>
+						<p class="footer-hours">Пн - Пт 9:00 - 19:00</p>
+						<a href="/contacts" class="footer-contact-us">Напишите нам</a>
+					</div>
+					<nav class="footer-nav">
+						<a href="/about" class="footer-nav-a">О компании</a>
+						<a href="/terms" class="footer-nav-a">Условия покупки</a>
+						// <a href="/logistics" class="footer-nav-a">Доставка</a>
+					</nav>
+				</div>
+				<div class="footer-block footer-block-colophon">
+					<div class="footer-colophon-container">
+						<a href="/" class="footer-home-link">desGruppe.shop</a>
+						<p class="footer-colophon">© 2025 desgruppe дизайнерские предметы интерьера</p>
+						<a href="/personal-data" class="footer-terms-link">Согласие на обработку <br/> персональных данных</a>
+					</div>
+					<div class="footer-social-container">
+						<a href="https://vk.com" class="footer-social-a">
+							<img src="imgs/icons/vk-black-icon.png" alt="" class="footer-social-icon"/>
+						</a>
+					</div>
+				</div>
+			</footer>
+			<div class="cart-bg hidden"></div>
+			@components.CartPanel(props.Cart.Products, props.Cart.Colors, props.Cart.Qtys, props.Cart.ExRate)
+			for _, sc := range props.Scripts {
+				<script src={ "/script/user/" + sc } defer></script>
+			}
+			<script src="/script/user/adaptive.js"></script>
+			<script src="/script/user/cart.js" defer></script>
+		</body>
+	</html>
+}
+
+func Sum(ints []int) int {
+	r := 0
+	for _, i := range ints {
+		r += i
+	}
+	return r
+}

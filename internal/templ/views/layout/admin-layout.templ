@@ -1,0 +1,81 @@
+package layout
+
+
+type AdminLayoutProps struct{
+    Title string
+    WatchingPage string
+    Scripts []string
+}
+
+templ AdminPageLayout(props AdminLayoutProps) {
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../../static/admin/admin-style.css">
+        <link rel="shortcut icon" href="../../imgs/favicon.ico" type="image/x-icon">
+        <title>{props.Title}</title>
+    </head>
+
+    <body>
+        <header class="header">
+            <div class="header-title-container">
+                <h1 class="header-title"><a href="" class="header-a">desGruppe.shop</a></h1>
+            </div>
+            <div class="header-empty"></div>
+        </header>
+
+        <main class="main">
+            <section class="panel">
+                <h2 class="panel-title">Модули</h2>
+                <ul class="panel-ul">
+                    <li class="panel-li"><a href="/admin/sections" class="panel-a">Разделы</a></li>
+                    <li class="panel-li"><a href="/admin/colors" class="panel-a">Цвета</a></li>
+                    <li class="panel-li"
+                    if props.WatchingPage == "products"{ style="color: black" }
+                    ><a href="/admin/products" class="panel-a"
+                    if props.WatchingPage == "products"{ style="color: black" }
+                    >Изделия</a></li>
+                    <li class="panel-li"><a href="/admin/designers" class="panel-a">Дизайнеры</a></li>
+                    <li class="panel-li"><a href="/admin/producers" class="panel-a">Производители</a></li>
+                    <li class="panel-empty-li"></li>
+                    <li class="panel-li"
+                    if props.WatchingPage == "available"{ style="color: black" }
+                    ><a href="/admin/available" class="panel-a"
+                    if props.WatchingPage == "available"{ style="color: black" }
+                    >Наличие</a></li>
+                    <li class="panel-li"
+                    if props.WatchingPage == "best"{ style="color: black" }
+                    ><a href="/admin/best" class="panel-a"
+                    if props.WatchingPage == "best"{ style="color: black" }
+                    >Популярные</a></li>
+                    <li class="panel-empty-li"></li>
+                    <li class="panel-li"
+                    if props.WatchingPage == "orders"{ style="color: black" }
+                    ><a href="/admin/orders" class="panel-a"
+                    if props.WatchingPage == "orders"{ style="color: black" }
+                    >Заказы</a></li>
+                    <li class="panel-li"><a href="/admin/questions" class="panel-a">Вопросы</a></li>
+                    <li class="panel-empty-li"></li>
+                    <li class="panel-li"
+                    if props.WatchingPage == "settings"{ style="color: black" }
+                    ><a href="/admin/exchange-rate" class="panel-a"
+                    if props.WatchingPage == "settings"{ style="color: black" }
+                    >Настройки</a></li>
+                </ul>
+            </section>
+
+            { children... }
+
+        </main>
+
+        for _, sc := range props.Scripts{
+            <script src={"/script/admin/"+sc} defer></script>
+        }
+
+    </body>
+
+    </html>
+}

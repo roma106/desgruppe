@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/admin/admin-style.css">
+    <link rel="shortcut icon" href="../imgs/favicon.ico" type="image/x-icon">
+    <title>desGruppe admin panel</title>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-title-container">
+            <h1 class="header-title"><a href="" class="header-a">desGruppe.shop</a></h1>
+        </div>
+        <div class="header-empty"></div>
+    </header>
+
+    <main class="main">
+        <section class="panel">
+            <h2 class="panel-title">Модули</h2>
+            <ul class="panel-ul">
+                <li class="panel-li"><a href="/admin/sections" class="panel-a">Разделы</a></li>
+                <li class="panel-li"><a href="/admin/colors" class="panel-a">Цвета</a></li>
+                <li class="panel-li" style="color: black"><a href="/admin/products" class="panel-a" style="color: black">Изделия</a></li>
+                <li class="panel-li"><a href="/admin/designers" class="panel-a">Дизайнеры</a></li>
+                <li class="panel-li"><a href="/admin/producers" class="panel-a">Производители</a></li>
+                <li class="panel-empty-li"></li>
+                <li class="panel-li"><a href="/admin/sales" class="panel-a">Распродажи</a></li>
+                <li class="panel-li"><a href="/admin/available" class="panel-a">Наличие</a></li>
+                <li class="panel-empty-li"></li>
+                <li class="panel-li"><a href="/admin/orders" class="panel-a">Заказы</a></li>
+                <li class="panel-li"><a href="/admin/questions" class="panel-a">Вопросы</a></li>
+                <li class="panel-empty-li"></li>
+                <li class="panel-li"><a href="/admin/exchange-rate" class="panel-a">Курс валюты</a></li>
+            </ul>
+        </section>
+        <div class="main-container">
+            <h1 class="title">Фотогалерея изделия</h1>
+
+            <div class="photos-main-container">
+                <img src="" alt="" class="photos-main-img">
+
+                <div class="photos-main-form-container">
+                    <h2 class="add-title">Основное фото</h2>
+                    <div class="add-form-block">
+                        <p class="add-form-label">Новое фото</p>
+                        <input type="file" class="add-form-input add-photo">
+                    </div>
+                    <button class="add-form-button add-main-photo-button">Сохранить новое фото</button>
+                </div>
+            </div>
+            
+            <h2 class="add-title">Галерея</h2>
+            
+            <div class="photos-container">
+                <div class="photos-items-container">
+                    <div class="photo-item">
+                        <img src="../../imgs/products/pant.jpeg" alt="" class="photo-item-img">
+                        <div class="photo-item-options">
+                            <img src="../../imgs/icons/arrow-icon.png" alt="" class="photo-item-position-prev">
+                            <img src="../../imgs/icons/arrow-icon.png" alt="" class="photo-item-position-next">
+                            <img src="../../imgs/icons/admin-delete-icon.png" alt="" class="photo-item-delete">
+                        </div>
+                    </div>
+                    
+                    
+                </div>
+            </div>
+            <button class="add-form-button edit-photo-button">Сохранить изменения в галерее</button>
+
+            <div class="add-container">
+                <h2 class="add-title">Добавить фото в каталог</h2>
+
+                <div class="add-form">
+                    <div class="add-form-block">
+                        <p class="add-form-label">Новое фото</p>
+                        <input type="file" class="add-form-input add-catalog-photo" multiple>
+                    </div>
+                    <button class="add-form-button add-photo-button">Добавить</button>
+                </div>
+            </div>
+
+
+        </div>
+    </main>
+
+    <div class="delete-color-popup display-hidden">
+        <div class="delete-color-popup-container">
+            <p class="delete-color-popup-text">Вы действительно хотите удалить фото?</p>
+            <div class="add-form-buttons-container">
+                <button class="close-delete-popup-button">Отмена</button>
+                <button class="delete-color-popup-button">Удалить</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="../../static/admin/admin-edit-photos-script.js"></script>
+    
+</body>
+
+</html>

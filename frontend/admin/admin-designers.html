@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/admin/admin-style.css">
+    <link rel="shortcut icon" href="../imgs/favicon.ico" type="image/x-icon">
+    <title>desGruppe admin panel</title>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-title-container">
+            <h1 class="header-title"><a href="" class="header-a">desGruppe.shop</a></h1>
+        </div>
+        <div class="header-empty"></div>
+    </header>
+
+    <main class="main">
+        <section class="panel">
+            <h2 class="panel-title">Модули</h2>
+            <ul class="panel-ul">
+                <li class="panel-li"><a href="/admin/sections" class="panel-a">Разделы</a></li>
+                <li class="panel-li"><a href="/admin/colors" class="panel-a">Цвета</a></li>
+                <li class="panel-li"><a href="/admin/products" class="panel-a">Изделия</a></li>
+                <li class="panel-li" style="color: black"><a href="/admin/designers" class="panel-a" style="color: black">Дизайнеры</a></li>
+                <li class="panel-li"><a href="/admin/producers" class="panel-a">Производители</a></li>
+                <li class="panel-empty-li"></li>
+                <li class="panel-li"><a href="/admin/available" class="panel-a">Наличие</a></li>
+                <li class="panel-li"><a href="/admin/best" class="panel-a">Популярные</a></li>
+                <li class="panel-empty-li"></li>
+                <li class="panel-li"><a href="/admin/orders" class="panel-a">Заказы</a></li>
+                <li class="panel-li"><a href="/admin/questions" class="panel-a">Вопросы</a></li>
+                <li class="panel-empty-li"></li>
+                <li class="panel-li"><a href="/admin/exchange-rate" class="panel-a">Настройки</a></li>
+            </ul>
+        </section>
+        <div class="main-container">
+            <h1 class="title">Дизайнеры</h1>
+
+            <div class="add-container">
+
+                <h2 class="add-title">Добавить дизайнера</h2>
+
+                <div class="add-form">
+                    <div class="add-form-block">
+                        <p class="add-form-label">Имя</p>
+                        <input type="text" class="add-form-input add-name" required>
+                    </div>
+                    <div class="add-form-description-block">
+                        <p class="add-form-label">Описание</p>
+                        <textarea class="add-form-description-input add-description"></textarea>
+                    </div>
+                    <div class="add-form-block">
+                        <p class="add-form-label">Картинка</p>
+                        <input type="file" class="add-form-input add-picture">
+                    </div>
+                    <div class="add-form-block">
+                        <p class="add-form-label">Позиция</p>
+                        <input type="number" class="add-form-input add-position" required>
+                    </div>
+
+                    <button class="add-form-button">Добавить</button>
+                </div>
+
+            </div>
+
+            <div class="search-container">
+                <input type="text" placeholder="Поиск" class="search-input">
+                <img src="../imgs/icons/search-icon.png" alt="" class="search-button search-button-disabled" >
+            </div>
+
+
+            <div class="pages-container">
+                <p class="page-p selected-page">1</p>
+                <p class="page-p">2</p>
+                <p class="page-p">3</p>
+            </div>
+
+
+            <div class="items-container">
+                <div class="items-header">
+                    <ul class="items-header-ul">
+                        <li class="items-header-li items-position">Позиция</li>
+                        <li class="items-header-li items-name">Имя</li>
+                    </ul>
+                </div>
+                <div class="items-table">
+                    <div class="items-li items-li-1">
+                        <p class="items-li-elem items-position">1</p>
+                        <p class="items-li-elem items-name">Charles & Ray Eames</p>
+                        <img src="../imgs/icons/admin-edit-icon.png" alt="" class="items-li-edit">
+                        <img src="../imgs/icons/admin-delete-icon.png" alt="" class="items-li-delete">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+
+
+    <div class="delete-color-popup display-hidden">
+        <div class="delete-color-popup-container">
+            <p class="delete-color-popup-text">Вы действительно хотите удалить дизайнера?</p>
+            <div class="add-form-buttons-container">
+                <button class="close-delete-popup-button">Отмена</button>
+                <button class="delete-color-popup-button">Удалить</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../static/admin/admin-d+p-script.js"></script>
+    <script src="../static/admin/admin-general-script.js"></script>
+</body>
+
+</html>

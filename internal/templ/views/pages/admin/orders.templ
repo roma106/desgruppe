@@ -1,0 +1,62 @@
+package pages
+
+import "desgruppe/internal/entities"
+import "desgruppe/internal/templ/views/layout"
+
+type OrdersPageProps struct {
+	Orders []entities.Order
+}
+
+templ OrdersPage(props OrdersPageProps) {
+	@layout.AdminPageLayout(layout.AdminLayoutProps{
+		Title:   "desGruppe admin panel",
+		Scripts: []string{"orders.js"},
+		WatchingPage: "orders",
+	},
+	) {
+		<div class="main-container">
+			<h1 class="title">Заказы</h1>
+			<div class="items-container">
+				<div class="items-header">
+					<ul class="items-header-ul">
+						<li class="items-header-li items-date">Дата</li>
+						<li class="items-header-li items-name">Контактное лицо</li>
+						<li class="items-header-li items-email">E-mail</li>
+						<li class="items-header-li items-phone">Телефон</li>
+					</ul>
+				</div>
+				<div class="items-table">
+					for _, ord := range props.Orders {
+						<li
+							if ord.Seen==true {
+								class="items-li"
+							} else {
+								class="items-li order-not-seen"
+							}
+							id={ ord.ID }
+						>
+                        if ord.Seen==false{
+                            <div class="items-order-not-seen"></div>
+                        }
+							<p class="items-li-elem items-date">{ ord.Date.Format("02.01.2006") }</p>
+							<p class="items-li-elem items-name">{ ord.Name }</p>
+							<p class="items-li-elem items-email">{ ord.Email }</p>
+							<p class="items-li-elem items-phone">{ ord.Phone }</p>
+							<img src="../imgs/icons/admin-order-icon.png" alt="" class="items-li-order"/>
+							<img src="../imgs/icons/admin-delete-icon.png" alt="" class="items-li-delete"/>
+						</li>
+					}
+				</div>
+			</div>
+		</div>
+		<div class="delete-color-popup display-hidden">
+			<div class="delete-color-popup-container">
+				<p class="delete-color-popup-text">Вы действительно хотите удалить цвет?</p>
+				<div class="add-form-buttons-container">
+					<button class="close-delete-popup-button">Отмена</button>
+					<button class="delete-color-popup-button">Удалить</button>
+				</div>
+			</div>
+		</div>
+	}
+}

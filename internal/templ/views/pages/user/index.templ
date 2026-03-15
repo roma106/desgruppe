@@ -1,0 +1,157 @@
+package pages
+
+import "desgruppe/internal/templ/views/layout"
+import "desgruppe/internal/entities"
+import "strconv"
+
+type IndexPageProps struct{
+    Available []entities.Product
+    Best []entities.Product
+    Cart layout.UserCart
+    ExRate float64
+}
+
+templ IndexPage(props IndexPageProps) {
+    @layout.UserPageLayout(layout.UserLayoutProps{
+        Title: "desGruppe - Дизайнерские предметы интерьера",
+        Styles: []string{"index-style.css"},
+        Scripts: []string{"index.js"},
+        Cart: props.Cart,
+    }){
+        <div class="main-banner-carousel">
+            <div class="banner-left">
+                <svg width="12" height="24" viewBox="0 0 12 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M0.38296 20.0762C0.111788 19.805 0.111788 19.3654 0.38296 19.0942L9.19758 10.2796L0.38296 1.46497C0.111788 1.19379 0.111788 0.754138 0.38296 0.482966C0.654131 0.211794 1.09379 0.211794 1.36496 0.482966L10.4341 9.55214C10.8359 9.9539 10.8359 10.6053 10.4341 11.007L1.36496 20.0762C1.09379 20.3474 0.654131 20.3474 0.38296 20.0762Z"
+                        fill="white"></path>
+                </svg>
+            </div>
+            <div class="main-banner-container">
+                <div class="main-banner-elem">
+                    <img src="imgs/banners/no button/Lounge Chair Banner.png" alt="" class="main-banner-img" oncontextmenu="return false;">
+                </div>
+                <div class="main-banner-elem">
+                    <img src="imgs/banners/no button/ea217-banner.png" alt="" class="main-banner-img" oncontextmenu="return false;">
+                </div>
+                <div class="main-banner-elem">
+                    <img src="imgs/banners/no button/lachaise-banner.png" alt="" class="main-banner-img" oncontextmenu="return false;">
+                </div>
+                <div class="main-banner-elem">
+                    <img src="imgs/banners/no button/lobby-banner.png" alt="" class="main-banner-img" oncontextmenu="return false;">
+                </div>
+            </div>
+            <div class="banner-right">
+                <svg width="12" height="24" viewBox="0 0 12 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M0.38296 20.0762C0.111788 19.805 0.111788 19.3654 0.38296 19.0942L9.19758 10.2796L0.38296 1.46497C0.111788 1.19379 0.111788 0.754138 0.38296 0.482966C0.654131 0.211794 1.09379 0.211794 1.36496 0.482966L10.4341 9.55214C10.8359 9.9539 10.8359 10.6053 10.4341 11.007L1.36496 20.0762C1.09379 20.3474 0.654131 20.3474 0.38296 20.0762Z"
+                        fill="white"></path>
+                </svg>
+            </div>
+        </div>
+
+        <div class="main-available">
+            <h2 class="main-available-title">Наличие</h2>
+
+            <div class="main-available-carousel">
+                <div class="available-left">
+                    <svg width="12" height="24" viewBox="0 0 12 24" fill="black" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M0.38296 20.0762C0.111788 19.805 0.111788 19.3654 0.38296 19.0942L9.19758 10.2796L0.38296 1.46497C0.111788 1.19379 0.111788 0.754138 0.38296 0.482966C0.654131 0.211794 1.09379 0.211794 1.36496 0.482966L10.4341 9.55214C10.8359 9.9539 10.8359 10.6053 10.4341 11.007L1.36496 20.0762C1.09379 20.3474 0.654131 20.3474 0.38296 20.0762Z"
+                            fill="black"></path>
+                    </svg>
+                </div>
+                <div class="main-available-container">
+                for _, pr := range props.Available{
+                    <div class="product-available-item">
+                        <div class="shop-item"><a href={"/product/"+pr.Slug} class="shop-item-link">
+                        <img src={"/products/getImgBlob/Photo/"+strconv.Itoa(pr.ID)} alt="" class="shop-item-img">
+                        <div class="shop-item-info-container">
+                            <p class="shop-item-name">{pr.Name}</p>
+                            <div class="shop-item-price-container">
+                                <p class="shop-item-price">{FormatPrice(pr.Price*props.ExRate)}</p>
+                                <span class="shop-item-price-label">₽</span>
+                            </div>
+                        </div>
+                        </a></div>
+                    </div>
+                }
+                if len(props.Available)==0{
+                    <p class="main-sale-no-result">Сейчас нет товаров в наличии</p>
+                }
+                </div>
+                <div class="available-right">
+                    <svg width="12" height="24" viewBox="0 0 12 24" fill="black" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M0.38296 20.0762C0.111788 19.805 0.111788 19.3654 0.38296 19.0942L9.19758 10.2796L0.38296 1.46497C0.111788 1.19379 0.111788 0.754138 0.38296 0.482966C0.654131 0.211794 1.09379 0.211794 1.36496 0.482966L10.4341 9.55214C10.8359 9.9539 10.8359 10.6053 10.4341 11.007L1.36496 20.0762C1.09379 20.3474 0.654131 20.3474 0.38296 20.0762Z"
+                            fill="black"></path>
+                    </svg>
+                </div>
+            </div>
+            <button class="main-available-button">Смотреть все</button>
+
+        </div>
+
+
+        <section class="main-about">
+            <div class="about-text-block">
+                <h3 class="about-title">О нас</h3>
+
+                <p class="about-text">
+                    Интернет-магазин <b>desGruppe</b> предлагает дизайнерскую мебель и предметы интерьера от ведущих
+                    европейских законодателей мебельной моды.
+                    <br><br> Мы сотрудничаем с самыми известными производителями дизайнерской мебели и предметов
+                    интерьера. Список предлагаемых брендов постоянно расширяется. <br><br>
+                    Мы предлагаем своим клиентам только оригинальную продукцию, никаких <b>реплик под известные
+                        бренды!!!</b>
+                </p>
+
+                <button class="about-button">Узнать больше</button>
+            </div>
+
+            <div class="about-img-block">
+                <img src="imgs/banners/Vitra About us.jpg" alt="" class="about-img">
+            </div>
+        </section>
+
+        <div class="main-sale">
+            <h2 class="main-sale-title">Популярные товары</h2>
+
+            <div class="main-sale-carousel">
+                <div class="sale-left">
+                    <svg width="12" height="24" viewBox="0 0 12 24" fill="black" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M0.38296 20.0762C0.111788 19.805 0.111788 19.3654 0.38296 19.0942L9.19758 10.2796L0.38296 1.46497C0.111788 1.19379 0.111788 0.754138 0.38296 0.482966C0.654131 0.211794 1.09379 0.211794 1.36496 0.482966L10.4341 9.55214C10.8359 9.9539 10.8359 10.6053 10.4341 11.007L1.36496 20.0762C1.09379 20.3474 0.654131 20.3474 0.38296 20.0762Z"
+                            fill="black"></path>
+                    </svg>
+                </div>
+                <div class="main-sale-container">
+                for _, pr := range props.Best{
+                    <div class="product-sale-item">
+                        <div class="shop-item"><a href={"/product/"+pr.Slug} class="shop-item-link">
+                        <img src={"/products/getImgBlob/Photo/"+strconv.Itoa(pr.ID)} alt="" class="shop-item-img">
+                        <div class="shop-item-info-container">
+                            <p class="shop-item-name">{pr.Name}</p>
+                            <div class="shop-item-price-container">
+                                <p class="shop-item-price">{FormatPrice(pr.Price*props.ExRate)}</p>
+                                <span class="shop-item-price-label">₽</span>
+                            </div>
+                        </div>
+                        </a></div>
+                    </div>
+                }
+                if len(props.Best)==0{
+                    <p class="main-sale-no-result">Сейчас нет популярных товаров</p>
+                }
+                </div>
+                <div class="sale-right">
+                    <svg width="12" height="24" viewBox="0 0 12 24" fill="black" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M0.38296 20.0762C0.111788 19.805 0.111788 19.3654 0.38296 19.0942L9.19758 10.2796L0.38296 1.46497C0.111788 1.19379 0.111788 0.754138 0.38296 0.482966C0.654131 0.211794 1.09379 0.211794 1.36496 0.482966L10.4341 9.55214C10.8359 9.9539 10.8359 10.6053 10.4341 11.007L1.36496 20.0762C1.09379 20.3474 0.654131 20.3474 0.38296 20.0762Z"
+                            fill="black"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    }
+}
+

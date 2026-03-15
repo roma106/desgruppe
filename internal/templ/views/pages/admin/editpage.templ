@@ -1,0 +1,219 @@
+package pages
+
+// import "desgruppe/internal/templ/views/components"
+import "desgruppe/internal/entities"
+import "desgruppe/internal/templ/views/layout"
+import "slices"
+import "strconv"
+
+type EditPageProps struct {
+	Product   entities.Product
+	Sections  []entities.Section
+	Designers []entities.Designer
+	Producers []entities.Producer
+	Colors    []entities.Color
+	Type      string
+}
+
+templ ProductsEditPage(props EditPageProps) {
+	@layout.AdminPageLayout(
+		layout.AdminLayoutProps{
+			Title:        "desGruppe admin panel",
+			Scripts:      []string{"product-editpage.js", "product-colors.js"},
+			WatchingPage: "products",
+		},
+	) {
+		<div class="main-container">
+			<h1 class="title">Изделия</h1>
+			<div class="add-container">
+				<h2 class="add-title">Изменить изделие { props.Product.Name }</h2>
+				<div class="add-form">
+					<div class="add-form-block">
+						<p class="add-form-label">Название</p>
+						<input type="text" class="add-form-input add-name" required value={ props.Product.Name }/>
+					</div>
+					<div class="add-form-block">
+						<p class="add-form-label">Тип</p>
+						<select class="add-form-select add-type">
+							<option value="furniture" class="add-form-opt" selected?={ props.Product.Type=="furniture" }>Мебель</option>
+							<option value="light" class="add-form-opt" selected?={ props.Product.Type=="light" }>Свет</option>
+							<option value="interior" class="add-form-opt" selected?={ props.Product.Type=="interior" }>Предметы интерьера</option>
+						</select>
+					</div>
+					<div class="add-form-block">
+						<p class="add-form-label">Раздел</p>
+						<select class="add-form-select add-section">
+							for _,sec := range props.Sections {
+								if sec.Type==props.Type {
+									<option
+										value={ sec.ID }
+										class="add-form-opt"
+										selected?={ props.Product.SectionID==sec.ID }
+									>{ sec.Name }</option>
+								}
+							}
+						</select>
+					</div>
+					<div class="add-form-block">
+						<p class="add-form-label">Производитель</p>
+						<select class="add-form-select add-producer">
+							for _,prod := range props.Producers {
+								<option
+									value={ prod.ID }
+									class="add-form-opt"
+									selected?={ props.Product.ProducerID==prod.ID }
+								>{ prod.Name }</option>
+							}
+						</select>
+					</div>
+					<div class="add-form-block">
+						<p class="add-form-label">Дизайнер</p>
+						<select class="add-form-select add-designer">
+							for _,des := range props.Designers {
+								<option
+									value={ des.ID }
+									class="add-form-opt"
+									selected?={ props.Product.DesignerID==des.ID }
+								>{ des.Name }</option>
+							}
+						</select>
+					</div>
+					<div class="add-form-block">
+						<p class="add-form-label">Размер</p>
+						<input type="text" class="add-form-input add-size" value={ props.Product.Size }/>
+					</div>
+					<div class="add-form-block">
+						<p class="add-form-label">Свободная форма</p>
+						<input
+							type="text"
+							class="add-form-input add-free-form"
+							if props.Product.FreeForm==nil {
+								value=""
+							} else {
+								value={ props.Product.FreeForm.(string) }
+							}
+						/>
+					</div>
+					<div class="add-form-block">
+						<p class="add-form-label">В наличии</p>
+						<input
+							type="checkbox"
+							class="add-form-input add-form-checkbox add-available"
+							checked?={ props.Product.Available }
+						/>
+					</div>
+					<div class="add-form-block">
+						<p class="add-form-label">Цена</p>
+						<input type="number" class="add-form-input add-price" value={ props.Product.Price }/>
+						<p class="add-form-price-label">€</p>
+					</div>
+					<div class="add-form-block">
+						<p class="add-form-label">Распродажа</p>
+						<input
+							type="checkbox"
+							class="add-form-input add-form-checkbox add-sale-checkbox"
+							checked?={ props.Product.OnSale }
+						/>
+					</div>
+					<div
+						if props.Product.OnSale {
+							class="add-form-block add-form-sale-block"
+						} else {
+							class="add-form-block add-form-sale-block hidden"
+						}
+					>
+						<p class="add-form-label">Цена со скидкой</p>
+						<input
+							type="number"
+							class="add-form-input add-price-with-sale"
+							value={ props.Product.Price * (100 - props.Product.Sale) / 100 }
+						/>
+						<p class="add-form-price-label">€</p>
+						<p class="add-form-label" style="margin-left: 10px;">Скидка в %</p>
+						<input type="number" class="add-form-input add-sale" value={ props.Product.Sale }/>
+						<p class="add-form-price-label">%</p>
+					</div>
+					<div class="add-form-description-block">
+						<p class="add-form-label">Описание</p>
+						<textarea class="add-form-description-input add-description">{ props.Product.Description }</textarea>
+					</div>
+					<div class="add-form-block">
+						<p class="add-form-label">Позиция</p>
+						<input type="number" class="add-form-input add-position" value={ props.Product.Position }/>
+					</div>
+					<div class="add-form-block">
+						<p class="add-form-label">URL адрес</p>
+						<input type="text" class="add-form-input add-slug" value={ props.Product.Slug }/>
+					</div>
+					<div class="add-form-color-block">
+						<h3 class="add-form-color-title">Цвета</h3>
+						<div class="add-form-selected-colors-container">
+							<p class="add-form-label">Выбранные цвета:</p>
+							<div class="add-form-selected-colors">
+								for _, col := range props.Colors {
+									if slices.Contains(props.Product.Colors, col.ID) {
+										<div class="add-form-color" style="border: solid 2px #0A6CCE">
+											<input
+												type="checkbox"
+												id={ "color" + strconv.Itoa(col.ID) }
+												class="add-form-color-checkbox"
+												style="display: none;"
+											/>
+											if col.Code!="" {
+												<span
+													class="add-form-color-span"
+													style={ "background-color: #" + col.Code }
+												></span>
+											} else {
+												<img class="add-form-color-span" src={ "/colors/getImgBlob/Picture/" + strconv.Itoa(col.ID) }/>
+											}
+											<p class="add-form-color-p">{ col.Name }</p>
+										</div>
+									}
+								}
+							</div>
+						</div>
+						<div class="search-color-container">
+							<input type="text" placeholder="Поиск цвета" class="search-color-input"/>
+							<img src="../../imgs/icons/search-icon.png" alt="" class="search-color-button search-color-button-disabled"/>
+						</div>
+						<p class="search-color-result-text display-hidden"></p>
+						<div class="add-form-colors-container">
+							<div class="add-form-colors-container-all">
+								for _, col := range props.Colors {
+									<div
+										class="add-form-color"
+										if slices.Contains(props.Product.Colors, col.ID) {
+											style="border: solid 2px #0A6CCE"
+										}
+									>
+										<input
+											type="checkbox"
+											id={ "color" + strconv.Itoa(col.ID) }
+											class="add-form-color-checkbox"
+											checked?={ slices.Contains(props.Product.Colors, col.ID) }
+											onChange={ templ.JSFuncCall("ColorBorderChange", strconv.Itoa(col.ID)) }
+										/>
+										if col.Code!="" {
+											<span
+												class="add-form-color-span"
+												style={ "background-color: #" + col.Code }
+											></span>
+										} else {
+											<img class="add-form-color-span" src={ "/colors/getImgBlob/Picture/" + strconv.Itoa(col.ID) }/>
+										}
+										<p class="add-form-color-p">{ col.Name }</p>
+									</div>
+								}
+							</div>
+						</div>
+					</div>
+					<div class="add-form-buttons-container">
+						<button class="close-window-button" onclick="window.close()">Назад</button>
+						<button class="add-form-button">Изменить</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+}

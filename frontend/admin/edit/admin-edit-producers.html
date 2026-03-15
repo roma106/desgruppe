@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/admin/admin-style.css">
+    <title>Producer editing</title>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-title-container">
+            <h1 class="header-title"><a href="" class="header-a">desGruppe.shop</a></h1>
+        </div>
+        <div class="header-empty"></div>
+    </header>
+
+    <main class="main">
+        <section class="panel">
+            <h2 class="panel-title">Модули</h2>
+            <ul class="panel-ul">
+                <li class="panel-li"><a href="/admin/sections" class="panel-a">Разделы</a></li>
+                <li class="panel-li"><a href="/admin/colors" class="panel-a">Цвета</a></li>
+                <li class="panel-li"><a href="/admin/products" class="panel-a">Изделия</a></li>
+                <li class="panel-li"><a href="/admin/designers" class="panel-a">Дизайнеры</a></li>
+                <li class="panel-li"><a href="/admin/producers" class="panel-a">Производители</a></li>
+                <li class="panel-empty-li"></li>
+                <li class="panel-li"><a href="/admin/sales" class="panel-a">Распродажи</a></li>
+                <li class="panel-li"><a href="/admin/available" class="panel-a">Наличие</a></li>
+                <li class="panel-empty-li"></li>
+                <li class="panel-li"><a href="/admin/orders" class="panel-a">Заказы</a></li>
+                <li class="panel-li"><a href="/admin/questions" class="panel-a">Вопросы</a></li>
+                <li class="panel-empty-li"></li>
+                <li class="panel-li"><a href="/admin/exchange-rate" class="panel-a">Курс валюты</a></li>
+            </ul>
+        </section>
+        <div class="main-container">
+            <h1 class="title">Производители</h1>
+
+            <div class="add-container">
+
+                <h2 class="add-title">Изменить производителя</h2>
+
+                <div class="add-form">
+                    <div class="edit-form-picture-block">
+
+                    </div>
+                    <div class="add-form-block">
+                        <p class="add-form-label">Имя</p>
+                        <input type="text" class="add-form-input add-name" required>
+                    </div>
+                    <div class="add-form-description-block">
+                        <p class="add-form-label">Описание</p>
+                        <textarea class="add-form-input add-description add-form-description-input" required></textarea>
+                    </div>
+                    <div class="add-form-block">
+                        <p class="add-form-label">Картинка</p>
+                        <input type="file" class="add-form-input add-picture">
+                    </div>
+                    <div class="add-form-block">
+                        <p class="add-form-label">Позиция</p>
+                        <input type="number" class="add-form-input add-position" required>
+                    </div>
+                    <div class="add-form-buttons-container">
+                        <button class="close-window-button" onclick="window.close()">Назад</button>
+                        <button class="add-form-button">Изменить</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+
+
+        const desId = new URLSearchParams(window.location.search).get("id");
+        console.log(desId);
+        fetch("/admin/producers/get?id=" + desId)
+            .then((res) => res.json()).then((des) => {
+                document.querySelector(".add-title").innerHTML = `Изменить производителя ${des.name}`;
+                document.querySelector(".add-name").value = des.name;
+                document.querySelector(".add-description").value = des.description;
+                document.querySelector(".add-position").value = des.position;
+                let picturebytes = new Int8Array(des.picture);
+                const blob = new Blob([picturebytes], { type: "image/png" });
+                const url = URL.createObjectURL(blob);
+                let pictureBlock = document.querySelector(".edit-form-picture-block");
+                pictureBlock.innerHTML = `<img class="edit-form-picture" src="${url}">`
+            })
+
+        const editButton = document.querySelector(".add-form-button");
+        editButton.addEventListener("click", () => {
+            let desName = document.querySelector(".add-name").value;
+            let desDescription = document.querySelector(".add-description").value;
+            let desPicture = document.querySelector(".add-picture").files[0];
+            let desPosition = document.querySelector(".add-position").value;
+
+
+            const reader = new FileReader();
+            let data = {
+                id: Number(desId),
+                name: desName,
+                description: desDescription,
+                position: Number(desPosition),
+            }
+            if (desPicture == null || desPicture.length == 0 || desPicture == undefined) {
+                EditDesigner(data);
+                return
+            }
+            reader.readAsArrayBuffer(desPicture);
+            reader.onload = () => {
+                data.picture = Array.from(new Uint8Array(reader.result));
+                EditDesigner(data);
+            }
+        })
+
+        function EditDesigner(data) {
+            fetch("/admin/producers/edit", {
+                method: "PUT",
+                body: JSON.stringify(data),
+            }).then((res) => {
+                if (res.ok) {
+                    alert("Производитель успешно изменен!");
+                } else {
+                    alert("Произошла ошибка!");
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>

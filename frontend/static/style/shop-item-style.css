@@ -1,0 +1,61 @@
+.shop-item{
+    cursor: pointer;
+    box-sizing: border-box;
+    /* border: solid 2px rgb(114, 114, 114); */
+    width: 28.5%;
+    height: 340px;
+    margin: 30px 0;
+    display: flex;
+}
+@media(max-width: 1300px){
+    .shop-item{
+        width: 250px;
+    }
+}
+.shop-item-link{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    text-decoration: none;
+    color: black;
+}
+.shop-item-img{
+    height: 65%;
+}
+.shop-item-info-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 5px;
+}
+.shop-item-price-container{
+    display: flex;
+    align-items: center;
+}
+.shop-item-name, .shop-item-price, .shop-item-price-label{
+    text-align: center;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 1rem;
+    margin: 0;
+    margin-bottom: 8px;
+    letter-spacing: .4px;
+}
+
+.shop-item-line-through{
+    text-decoration: line-through;
+    font-size: .9rem;
+}
+.shop-item-sale-price, .shop-item-sale-price-label{
+    font-family: "Noto Sans", sans-serif;
+    font-size: 1rem;
+    margin: 0 0 0 8px;
+    color: rgb(0, 128, 28);
+    margin-bottom: 8px;
+    letter-spacing: .4px;
+}
+.shop-item-price-label, .shop-item-sale-price-label{
+    margin-left: 2px;
+}

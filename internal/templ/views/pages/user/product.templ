@@ -1,0 +1,199 @@
+package pages
+
+import "desgruppe/internal/entities"
+import "desgruppe/internal/templ/views/layout"
+import "strconv"
+import "fmt"
+
+type ProductPageProps struct {
+	Product         entities.Product
+	Photos          []entities.ProductPhoto
+	Designer        entities.Designer
+	Producer        entities.Producer
+	Colors          []entities.Color
+	ExRate          float64
+	Recommendations []entities.Product
+	Cart layout.UserCart
+}
+
+templ ProductPage(props ProductPageProps) {
+	@layout.UserPageLayout(layout.UserLayoutProps{
+		Title:   "desGruppe - " + props.Product.Name,
+		Styles:  []string{"product-style.css"},
+		Scripts: []string{"product.js"},
+		Cart: props.Cart,
+	}) {
+		<div class="product-block">
+			<div class="product-photos-block">
+				<div class="product-slider-block">
+					<svg class="product-photos-left-arrow" viewBox="0 0 100 100">
+						<path d="M 10,50 L 60,100 L 70,90 L 30,50  L 70,10 L 60,0 Z"></path>
+					</svg>
+					<div class="product-slider-canvas">
+						<div class="product-slider-all">
+							// <div class="product-slider-photo-container">
+								<div class="product-slider-photo-container">
+									<img src={ "/products/getImgBlob/Photo/" + strconv.Itoa(props.Product.ID) } alt="" class="product-slider-photo"/>
+								</div>
+								for _, ph := range props.Photos {
+									<div class="product-slider-photo-container">
+										<img src={ "/products_gallery/getImgBlob/Photo/" + strconv.Itoa(ph.ID) } alt="" class="product-slider-photo"/>
+									</div>
+								}
+							// </div>
+						</div>
+					</div>
+					<svg class="product-photos-right-arrow" viewBox="0 0 100 100">
+						<path
+							d="M 10,50 L 60,100 L 70,90 L 30,50  L 70,10 L 60,0 Z"
+							transform="translate(100, 100) rotate(180)"
+						></path>
+					</svg>
+				</div>
+				<div class="product-catalog-container">
+					<div class="product-catalog-item">
+						<img src={ "/products/getImgBlob/Photo/" + strconv.Itoa(props.Product.ID) } alt="" class="product-catalog-item-img"/>
+					</div>
+					for _, ph := range props.Photos {
+						<div class="product-catalog-item">
+							<img src={ "/products_gallery/getImgBlob/Photo/" + strconv.Itoa(ph.ID) } alt="" class="product-catalog-item-img"/>
+						</div>
+					}
+				</div>
+			</div>
+			<div class="product-info-block">
+				if props.Product.OnSale {
+					<p class="product-sale-title">SALE -{ props.Product.Sale }%</p>
+				}
+				<h2 class="product-name">{ props.Product.Name }</h2>
+				if props.Product.OnSale {
+					<div class="product-sale-block">
+						<h3 class="product-price-sale-rub">{ FormatPrice(props.Product.Price*(100-props.Product.Sale)/100*props.ExRate) } ₽</h3>
+					</div>
+					<div class="product-price-block-line">
+						<h3 class="product-price-rub">{ fmt.Sprint(props.Product.FreeForm) } { FormatPrice(props.Product.Price*props.ExRate) } ₽</h3>
+					</div>
+				} else {
+					<div class="product-price-block">
+						<h3 class="product-price-rub">{ fmt.Sprint(props.Product.FreeForm) } { FormatPrice(props.Product.Price*props.ExRate) } ₽</h3>
+					</div>
+				}
+				<div class="product-colors-container">
+					for _, col := range props.Colors {
+						<div class="product-color-item" id={ col.ID }>
+							if col.Code!="" {
+								<span
+									class="product-color-src"
+									style={ "background-color: #" + col.Code }
+								></span>
+							} else {
+								<img class="product-color-src" src={ "/colors/getImgBlob/Picture/" + strconv.Itoa(col.ID) }/>
+							}
+						</div>
+					}
+				</div>
+				<div class="product-buy-container">
+					<div class="product-qty-container">
+						<button class="product-qty-less">-</button>
+						<div class="product-qty">1</div>
+						<button class="product-qty-more">+</button>
+					</div>
+					<button class="product-buy-button" id={props.Product.ID}>В корзину</button>
+					<p class="product-select-color-error hidden">Выберите цвет/материал изделия</p>
+				</div>
+				<div class="product-nav-separator"></div>
+				<div class="product-nav-indicator"></div>
+				<nav class="product-nav-panel">
+					<p class="product-nav-item product-nav-item-active product-nav-description">Описание</p>
+					<p class="product-nav-item">Детали</p>
+					<p class="product-nav-item">Цвета</p>
+				</nav>
+				<div class="product-nav-info product-nav-info-active">
+					<p class="product-description">{ props.Product.Description }</p>
+				</div>
+				<div class="product-nav-info">
+					<ul class="product-details-ul">
+						<li class="product-details-block">
+							<p class="product-details-name">Размер</p>
+							<p class="product-details-value">{ props.Product.Size }</p>
+						</li>
+						<li class="product-details-block">
+							<p class="product-details-name">Дизайнер</p>
+							<a href={ "/designer/" + props.Designer.Slug } class="product-details-value product-details-designer">{ props.Designer.Name }</a>
+						</li>
+						<li class="product-details-block">
+							<p class="product-details-name">Фабрика</p>
+							<img onclick={ templ.JSFuncCall("GoToProducerPage", props.Producer.Slug) } src={ "/producers/getImgBlob/Picture/" + strconv.Itoa(props.Producer.ID) } class="product-details-producer"/>
+						</li>
+					</ul>
+				</div>
+				<div class="product-nav-info">
+					<ul class="product-colors-ul">
+						for _, col := range props.Colors {
+							<li class="product-color-li">
+								if col.Code!="" {
+									<span
+										class="product-color-src-li"
+										style={ "background-color: #" + col.Code }
+									></span>
+								} else {
+									<img class="product-color-src-li" src={ "/colors/getImgBlob/Picture/" + strconv.Itoa(col.ID) }/>
+								}
+								<p class="product-color-name">{ col.Name }</p>
+							</li>
+						}
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="product-page-text-block">
+			<!-- <h2 class="product-page-text-title"></h2> -->
+			<p class="product-page-text">
+				Человеку, который имеет в интерьере собственного дома хоть один эксклюзивный предмет, невозможно переоценить все
+				преимущества коллекции дизайнерской мебели, расположенной в каталоге сайта desGruppe. Продолжительное время
+				сотрудничества московской компании исключительно с признанными и всемирно известными мастерскими, позволяет
+				предложить пользователям профессионально составленный каталог, где представлена авторская дизайнерская мебель
+				для дома, офиса и общественных помещений.
+			</p>
+		</div>
+		<div class="product-recommendations-block">
+			<h2 class="product-recommendations-title">Вам может понравиться</h2>
+			<div class="product-recommendations-carousel">
+				<div class="rec-left">
+					<svg width="12" height="24" viewBox="0 0 12 24" fill="black" xmlns="http://www.w3.org/2000/svg">
+						<path
+							d="M0.38296 20.0762C0.111788 19.805 0.111788 19.3654 0.38296 19.0942L9.19758 10.2796L0.38296 1.46497C0.111788 1.19379 0.111788 0.754138 0.38296 0.482966C0.654131 0.211794 1.09379 0.211794 1.36496 0.482966L10.4341 9.55214C10.8359 9.9539 10.8359 10.6053 10.4341 11.007L1.36496 20.0762C1.09379 20.3474 0.654131 20.3474 0.38296 20.0762Z"
+							fill="black"
+						></path>
+					</svg>
+				</div>
+				<div class="product-recommendations-container">
+					for _,pr := range props.Recommendations {
+						<div class="product-rec-item">
+							<div class="shop-item">
+								<a href={ "/product/" + pr.Slug } class="shop-item-link">
+									<img src={ "/products/getImgBlob/Photo/" + strconv.Itoa(pr.ID) } alt="" class="shop-item-img"/>
+									<div class="shop-item-info-container">
+										<p class="shop-item-name">{ pr.Name }</p>
+										<div class="shop-item-price-container">
+											<p class="shop-item-price">{ FormatPrice(pr.Price*props.ExRate) }</p>
+											<span class="shop-item-price-label">₽</span>
+										</div>
+									</div>
+								</a>
+							</div>
+						</div>
+					}
+				</div>
+				<div class="rec-right">
+					<svg width="12" height="24" viewBox="0 0 12 24" fill="black" xmlns="http://www.w3.org/2000/svg">
+						<path
+							d="M0.38296 20.0762C0.111788 19.805 0.111788 19.3654 0.38296 19.0942L9.19758 10.2796L0.38296 1.46497C0.111788 1.19379 0.111788 0.754138 0.38296 0.482966C0.654131 0.211794 1.09379 0.211794 1.36496 0.482966L10.4341 9.55214C10.8359 9.9539 10.8359 10.6053 10.4341 11.007L1.36496 20.0762C1.09379 20.3474 0.654131 20.3474 0.38296 20.0762Z"
+							fill="black"
+						></path>
+					</svg>
+				</div>
+			</div>
+		</div>
+	}
+}

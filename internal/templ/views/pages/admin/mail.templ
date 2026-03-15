@@ -1,0 +1,138 @@
+package pages
+
+import (
+	"desgruppe/internal/entities"
+	"fmt"
+	"github.com/dustin/go-humanize"
+	"strings"
+)
+
+type NotificationMailProps struct {
+	Order
+	Products []entities.Product
+	Colors   []string
+	Qtys     []int
+	ExRate   float64
+}
+
+type Order struct {
+	Name    string
+	Date    string
+	Comment string
+	Phone   string
+	Email   string
+}
+
+templ NotificationMail(props NotificationMailProps) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>Desgruppe order</title>
+		</head>
+		<body>
+			<div class="add-container">
+				<h2 class="add-title" style="margin-bottom: 12px;">Заказ</h2>
+				<div class="add-form">
+					<div class="add-form-block" style="display: flex;">
+						<p class="add-form-label">Контактное лицо</p>
+						<p class="add-form-p add-name" style="margin-left: 12px;">{ props.Order.Name }</p>
+					</div>
+					<div class="add-form-block" style="display: flex;">
+						<p class="add-form-label">Дата</p>
+						<p class="add-form-p add-comment" style="margin-left: 12px;">{ props.Order.Date }</p>
+					</div>
+					<div class="add-form-block" style="display: flex;">
+						<p class="add-form-label">Телефон</p>
+						<p class="add-form-p add-phone" style="margin-left: 12px;">{ props.Order.Phone }</p>
+					</div>
+					<div class="add-form-block" style="display: flex;">
+						<p class="add-form-label">Эл. почта</p>
+						<p class="add-form-p add-email" style="margin-left: 12px;">{ props.Order.Email }</p>
+					</div>
+					<div class="add-form-block" style="display: flex;">
+						<p class="add-form-label">Комментарий</p>
+						<p class="add-form-p add-comment" style="margin-left: 12px;">{ props.Order.Comment }</p>
+					</div>
+				</div>
+				<div class="add-form">
+					<h3 class="add-title">Корзина</h3>
+					<table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse; table-layout:fixed;">
+						<thead>
+							<tr>
+								<th align="left" style="width:25%; padding: 12px 8px; background:#f4f4f4; font-size:20px; font-weight:bold; border-bottom:1px solid #ddd;">Товар</th>
+								<th align="left" style="width:25%; padding: 12px 8px; background:#f4f4f4; font-size:20px; font-weight:bold; border-bottom:1px solid #ddd;">Цена</th>
+								<th align="left" style="width:25%; padding: 12px 8px; background:#f4f4f4; font-size:20px; font-weight:bold; border-bottom:1px solid #ddd;">Кол-во</th>
+								<th align="left" style="width:25%; padding: 12px 8px; background:#f4f4f4; font-size:20px; font-weight:bold; border-bottom:1px solid #ddd;">Итог</th>
+							</tr>
+						</thead>
+						<tbody>
+							for i, pr := range props.Products {
+								<tr>
+									<td style="width:25%; padding: 10px 8px; border-bottom:1px solid #eee; font-size:16px;">
+										<div class="citems-elem-name">
+											<div class="citems-elem-name-container">
+												<p class="citems-elem-name-text">{ pr.Name }</p>
+												<p style="font-size: 14px;">Цвет: </p>
+												if len(props.Colors)>0 {
+													<p style="padding-left: 12px; font-size:12px;">{ props.Colors[i] }</p>
+												} else {
+													<p style="padding-left: 12px; font-size:12px;">Цвет не найден</p>
+												}
+											</div>
+										</div>
+									</td>
+									<td style="width:25%; padding: 10px 8px; border-bottom:1px solid #eee; font-size:16px;">
+										<p class="citem-elem-price-rub">{ FormatPrice(float64(pr.Price)*props.ExRate) } ₽</p>
+									</td>
+									<td style="width:25%; padding: 10px 8px; border-bottom:1px solid #eee; font-size:16px;">
+										<div class="citems-elem-qty-container">
+											<div class="citem-elem-qty">
+												<div class="citem-elem-qty-cnt">{ props.Qtys[i] }</div>
+											</div>
+										</div>
+									</td>
+									<td style="width:25%; padding: 10px 8px; border-bottom:1px solid #eee; font-size:16px;">
+										<p class="citem-elem-total-rub">{ FormatPrice(float64(props.Qtys[i])*float64(pr.Price)*props.ExRate) } ₽</p>
+									</td>
+								</tr>
+							}
+						</tbody>
+						<tfoot>
+							<tr>
+								<td style="width:25%; padding: 10px 8px;"></td>
+								<td style="width:25%; padding: 10px 8px;"></td>
+								<td style="width:25%; padding: 10px 8px;"></td>
+								<td style="width:25%; padding: 10px 8px; font-weight:bold; font-size:18px;">{ FormatPrice(CountTotal(props.Products, props.Qtys, props.ExRate)-CountTotalSale(props.Products, props.Qtys, props.ExRate)) } ₽</td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+		</body>
+	</html>
+}
+
+func CountTotal(products []entities.Product, qtys []int, exRate float64) float64 {
+	res := 0.0
+	for i, pr := range products {
+		res += float64(pr.Price) * float64(qtys[i]) * exRate
+	}
+	return res
+}
+func CountTotalSale(products []entities.Product, qtys []int, exRate float64) float64 {
+	res := 0.0
+	for i, pr := range products {
+		res += float64(pr.Price) * float64(qtys[i]) * exRate * float64(pr.Sale/100)
+	}
+	return res
+}
+
+func FormatPrice(value float64) string {
+	// humanize добавляет запятые, заменяем на пробелы
+	intStr := humanize.Commaf(float64(int64(value)))
+	intStr = strings.ReplaceAll(intStr, ",", " ")
+	frac := value - float64(int64(value))
+	return fmt.Sprintf("%s.%02d", intStr, int64(frac*100))
+}

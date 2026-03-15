@@ -1,0 +1,85 @@
+package pages
+
+import "desgruppe/internal/entities"
+import "desgruppe/internal/templ/views/layout"
+import "strconv"
+
+type AvailablePageProps struct {
+	Products []entities.Product
+}
+
+templ AvailablePage(props AvailablePageProps) {
+	@layout.AdminPageLayout(layout.AdminLayoutProps{
+		Title:        "desGruppe admin panel",
+		Scripts:      []string{"available.js"},
+		WatchingPage: "available",
+	}) {
+		<div class="main-container">
+			<h1 class="title">Наличие</h1>
+			<h2 class="add-title">Текущие</h2>
+			<div class="items-container sales-container">
+				<div class="items-header">
+					<ul class="items-header-ul">
+						<li class="items-header-li items-position">Позиция</li>
+						<li class="items-header-li items-photo">Фото</li>
+						<li class="items-header-li items-name">Название</li>
+						<li class="items-header-li items-price">Цена</li>
+					</ul>
+				</div>
+				<div class="items-table-sales">
+					for _, pr := range props.Products {
+						if pr.Available==true {
+							<div class="items-li">
+								<p class="items-li-elem items-position">{ pr.Position }</p>
+								<div class="items-li-elem items-photo">
+									<img src={ "/products/getImgBlob/Photo/" + strconv.Itoa(pr.ID) } alt="" class="items-li-elem items-photo-img"/>
+								</div>
+								<p class="items-li-elem items-name">{ pr.Name }</p>
+								<p class="items-li-elem items-price">{ FormatPrice(pr.Price) }</p>
+								<img src="../imgs/icons/admin-delete-icon.png" alt="" class="items-li-delete" id={ pr.ID }/>
+							</div>
+						}
+					}
+				</div>
+			</div>
+			<h2 class="add-title">Добавить в наличие</h2>
+			<div class="search-container">
+				<input type="text" placeholder="Поиск" class="search-input"/>
+				<img src="../imgs/icons/search-icon.png" alt="" class="search-button search-button-disabled"/>
+			</div>
+			<p class="search-result-text display-hidden"></p>
+			<div class="pages-container">
+				<p class="page-p selected-page">1</p>
+				<p class="page-p">2</p>
+				<p class="page-p">3</p>
+			</div>
+			<div class="items-container">
+				<div class="items-header">
+					<ul class="items-header-ul">
+						<li class="items-header-li items-position">Позиция</li>
+						<li class="items-header-li items-photo">Фото</li>
+						<li class="items-header-li items-name">Название</li>
+						<li class="items-header-li items-price">Цена</li>
+					</ul>
+				</div>
+				<div class="items-table">
+					for _, pr := range props.Products {
+						<div class="items-li">
+							<p class="items-li-elem items-position">{ pr.Position }</p>
+							<div class="items-li-elem items-photo">
+								<img src={ "/products/getImgBlob/Photo/" + strconv.Itoa(pr.ID) } alt="" class="items-li-elem items-photo-img"/>
+							</div>
+							<p class="items-li-elem items-name">{ pr.Name }</p>
+							<p class="items-li-elem items-price">{ FormatPrice(pr.Price) }</p>
+							if pr.Available==true {
+								<img src="/imgs/icons/tick-icon.png" alt="" class="items-li-tick"/>
+							} else {
+								<img src="/imgs/icons/circle-icon.png" alt="" class="items-li-make-sale"  id={ pr.ID }/>
+							}
+						</div>
+					}
+				</div>
+			</div>
+		</div>
+	}
+}

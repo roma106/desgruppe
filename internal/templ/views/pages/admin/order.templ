@@ -1,0 +1,107 @@
+package pages
+
+import "desgruppe/internal/entities"
+import "desgruppe/internal/templ/views/layout"
+import fr "desgruppe/internal/templ/views/pages/user"
+import "strconv"
+
+type OrderEditPageProps struct {
+	Order     entities.Order
+	Products  []entities.Product
+	Designers []string
+	Colors    []string
+	Qtys      []int
+	ExRate    float64
+}
+
+templ OrderEditPage(props OrderEditPageProps) {
+	@layout.AdminPageLayout(layout.AdminLayoutProps{
+		Title:   "desGruppe admin panel",
+		Scripts: []string{"order-editpage.js"},
+		WatchingPage: "orders",
+	},
+	) {
+		<div class="main-container">
+			<div class="add-container">
+				<h2 class="add-title"></h2>
+				<div class="add-form">
+					<div class="add-form-block">
+						<p class="add-form-label">Контактное лицо</p>
+						<p class="add-form-p add-name">{ props.Order.Name }</p>
+					</div>
+					<div class="add-form-block">
+						<p class="add-form-label">Телефон</p>
+						<p class="add-form-p add-phone">{ props.Order.Phone }</p>
+					</div>
+					<div class="add-form-block">
+						<p class="add-form-label">Эл. почта</p>
+						<p class="add-form-p add-email">{ props.Order.Email }</p>
+					</div>
+					<div class="add-form-block">
+						<p class="add-form-label">Комментарий</p>
+						<p class="add-form-p add-comment">{ props.Order.Comment }</p>
+					</div>
+				</div>
+				<div class="add-form">
+					<h3 class="add-title">Корзина</h3>
+					<table class="citems-table">
+						<thead class="citems-head">
+							<tr class="citems-header">
+								<th class="citems-th">Товар</th>
+								<th class="citems-th">Цена</th>
+								<th class="citems-th">Кол-во</th>
+								<th class="citems-th citems-total">Итог</th>
+							</tr>
+						</thead>
+						<tbody class="citems-body">
+							for i, pr := range props.Products {
+							<tr class="items-elem">
+								<td class="citems-td">
+									<a href={ "/product/" + pr.Slug } class="citems-a">
+										<div class="citems-elem-name">
+											<div class="citems-elem-img-container">
+												<img src={ "/products/getImgBlob/Photo/" + strconv.Itoa(pr.ID) } alt="" class="citems-elem-img"/>
+											</div>
+											<div class="citems-elem-name-container">
+												<p class="citems-elem-name-text">{ pr.Name }</p>
+												// <p class="citems-elem-designer">{props.Designers[i]}</p>
+												<p class="citems-elem-color-text">Цвет: </p>
+												if len(props.Colors)>0 {
+													<p class="citems-elem-color">{ props.Colors[i] }</p>
+												} else {
+													<p class="citems-elem-color">Цвет не найден</p>
+												}
+											</div>
+										</div>
+									</a>
+								</td>
+								<td class="citems-td">
+									<p class="citem-elem-price-rub">{ fr.FormatPrice(float64(pr.Price)*props.ExRate) } ₽</p>
+								</td>
+								<td class="citems-td">
+									<div class="citems-elem-qty-container">
+										<div class="citem-elem-qty">
+											<div class="citem-elem-qty-cnt">{ props.Qtys[i] }</div>
+										</div>
+									</div>
+								</td>
+								<td class="citems-td citems-total">
+									<p class="citem-elem-total-rub">{ fr.FormatPrice(float64(props.Qtys[i])*float64(pr.Price)*props.ExRate) } ₽</p>
+								</td>
+							</tr>
+							}
+						</tbody>
+						<tfoot class="citems-foot-total">
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td class="items-td order-total">{ fr.FormatPrice(fr.CountTotal(props.Products, props.Qtys, props.ExRate)-fr.CountTotalSale(props.Products, props.Qtys, props.ExRate)) } ₽</td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+		</div>
+	}
+}

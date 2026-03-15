@@ -1,0 +1,71 @@
+package pages
+
+import "desgruppe/internal/templ/views/layout"
+import "desgruppe/internal/entities"
+import "strconv"
+
+type AvailablePageProps struct{
+    Products []entities.Product
+    ExRate float64
+    Cart layout.UserCart
+}
+
+
+templ AvailablePage(props AvailablePageProps) {
+    @layout.UserPageLayout(layout.UserLayoutProps{
+        Title: "Элитная мебель от мировых мебельных дизайнеров - desGruppe",
+        Styles: []string{"furniture-style.css"},
+        Scripts: []string{},
+        Cart: props.Cart,
+    }){
+        <style>
+        @media(min-width: 1000px){
+           .shop-item{
+                height: 320px;
+            }     
+        }
+        </style>
+        <ol class="main-breadcrumbs-list">
+            <li class="main-breadcrumbs-li">
+                <a href="/" class="main-breadcrumbs-a">desGruppe</a>
+                <span class="main-breadcrumbs-span">/</span>
+            </li>
+            <li class="main-breadcrumbs-li">
+                <a href="/available" class="main-breadcrumbs-a">Наличие</a>
+            </li>
+        </ol>
+        <div class="shop-container">
+
+            <div class="shop-items" style="width: 100%; margin: 0;">
+
+                <h1 class="shop-title">Наличие</h1>
+
+                <div class="shop-sort-container">
+                </div>
+
+                <div class="shop-items-all">
+                
+                for _, pr := range props.Products{
+                    <div class="shop-item">
+                    <a href={"/product/"+pr.Slug} class="shop-item-link">
+                    <img src={"/products/getImgBlob/Photo/"+strconv.Itoa(pr.ID)} alt="" class="shop-item-img">
+                    <div class="shop-item-info-container">
+                        <p class="shop-item-name">{pr.Name}</p>
+                        <div class="shop-item-price-container">
+                            <p class="shop-item-price">{FormatPrice(pr.Price*props.ExRate)}</p>
+                            <span class="shop-item-price-label">₽</span>
+                        </div>
+                    </div>
+                    </a></div>
+                }
+
+                </div>
+
+                if len(props.Products)==0{
+                    <p class="shop-no-result">Нет результатов</p>
+                }
+
+            </div>
+        </div>
+    }
+}

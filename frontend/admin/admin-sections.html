@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/admin/admin-style.css">
+    <link rel="shortcut icon" href="../imgs/favicon.ico" type="image/x-icon">
+    <title>desGruppe admin panel</title>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-title-container">
+            <h1 class="header-title"><a href="" class="header-a">desGruppe.shop</a></h1>
+        </div>
+        <div class="header-empty"></div>
+    </header>
+
+    <main class="main">
+        <section class="panel">
+            <h2 class="panel-title">Модули</h2>
+            <ul class="panel-ul">
+                <li class="panel-li" style="color: black"><a href="/admin/sections" class="panel-a"
+                        style="color: black">Разделы</a></li>
+                <li class="panel-li"><a href="/admin/colors" class="panel-a">Цвета</a></li>
+                <li class="panel-li"><a href="/admin/products" class="panel-a">Изделия</a></li>
+                <li class="panel-li"><a href="/admin/designers" class="panel-a">Дизайнеры</a></li>
+                <li class="panel-li"><a href="/admin/producers" class="panel-a">Производители</a></li>
+                <li class="panel-empty-li"></li>
+                <li class="panel-li"><a href="/admin/available" class="panel-a">Наличие</a></li>
+                <li class="panel-li"><a href="/admin/best" class="panel-a">Популярные</a></li>
+                <li class="panel-empty-li"></li>
+                <li class="panel-li"><a href="/admin/orders" class="panel-a">Заказы</a></li>
+                <li class="panel-li"><a href="/admin/questions" class="panel-a">Вопросы</a></li>
+                <li class="panel-empty-li"></li>
+                <li class="panel-li"><a href="/admin/exchange-rate" class="panel-a">Настройки</a></li>
+            </ul>
+        </section>
+        <div class="main-container">
+            <h1 class="title">Разделы</h1>
+
+            <div class="add-container">
+                <h2 class="add-title">Добавить раздел</h2>
+                <div class="add-form">
+                    <div class="add-form-block">
+                        <p class="add-form-label">Тип</p>
+                        <select class="add-form-select add-type">
+                            <option value="furniture" class="add-form-opt" selected>Мебель</option>
+                            <option value="light" class="add-form-opt">Свет</option>
+                            <option value="interior" class="add-form-opt">Предметы интерьера</option>
+                        </select>
+                    </div>
+                    <div class="add-form-description-block">
+                        <p class="add-form-label">Название</p>
+                        <input type="text" class="add-form-input add-name" required>
+                    </div>
+
+                    <button class="add-form-button">Добавить</button>
+                </div>
+
+            </div>
+
+
+            <div class="section-container">
+                <h2 class="add-title">Мебель</h2>
+                <div class="section-items">
+                    <div class="items-container">
+                        <div class="items-table">
+                        </div>
+                    </div>
+
+                    <div class="section-separator"></div>
+                </div>
+            </div>
+            <div class="section-container">
+                <h2 class="add-title">Свет</h2>
+                <div class="section-items">
+                    <div class="items-container">
+                        <div class="items-table">
+                        </div>
+                    </div>
+                    <div class="section-separator"></div>
+                </div>
+            </div>
+            <div class="section-container">
+                <h2 class="add-title">Предметы интерьера</h2>
+                <div class="section-items">
+                    <div class="items-container">
+                        <div class="items-table">
+                        </div>
+                    </div>
+
+                    <div class="section-separator"></div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+    </main>
+
+    <div class="delete-color-popup display-hidden">
+        <div class="delete-color-popup-container">
+            <p class="delete-color-popup-text">Вы действительно хотите удалить дизайнера?</p>
+            <div class="add-form-buttons-container">
+                <button class="close-delete-popup-button">Отмена</button>
+                <button class="delete-color-popup-button">Удалить</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="../static/admin/admin-sections-script.js"></script>
+    <!-- <script src="../static/admin/admin-general-script.js"></script> -->
+</body>
+
+</html>

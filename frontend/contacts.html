@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>desGruppe - Контакты</title>
+    <link rel="icon" href="images/favicon.ico" type="image/icon">
+    <link rel="shortcut icon" href="imgs/favicon.ico" type="image/icon">
+    <link rel="stylesheet" href="static/style/header-style.css">
+    <link rel="stylesheet" href="static/style/general-style.css">
+</head>
+
+<body class="body">
+    <header class="header">
+        <div class="header-title">
+            <a href="/" class="header-logo-a">
+                <span class="header-logo-main">desGruppe</span>
+                <span class="header-logo-text"> Дизайнерские предметы интерьера</span>
+            </a>
+            <div class="header-title-panel">
+                <div class="header-search-container">
+                    <input type="text" class="header-search-input" placeholder="Поиск">
+                    <button class="header-search-button">
+                        <img src="imgs/icons/search-icon.png" alt="" class="header-search-button-img">
+                    </button>
+                </div>
+                <a class="header-cart-container">
+                    <img src="imgs/icons/cart-icon.png" alt="" class="header-cart-img">
+                    <div class="header-cart-cnt"></div>
+                </a>
+                <div class="header-burger-container">
+                    <img src="imgs/icons/burger-menu-icon.png" alt="" class="header-burger-img">
+                </div>
+            </div>
+        </div>
+
+        <nav class="header-nav">
+            <ul class="header-nav-ul">
+                <li class="header-nav-li"><a href="/furniture" class="header-nav-a">Мебель</a></li>
+                <li class="header-nav-li"><a href="/light" class="header-nav-a">Свет</a></li>
+                <li class="header-nav-li"><a href="/interior" class="header-nav-a">Аксессуары</a></li>
+                <li class="header-nav-li"><a href="/designers" class="header-nav-a">Дизайнеры</a></li>
+                <li class="header-nav-li"><a href="/producers" class="header-nav-a">Фабрики</a></li>
+                <li class="header-nav-li"><a href="/available" class="header-nav-a">Наличие</a></li>
+                <li class="header-nav-li"><a href="/contacts" class="header-nav-a">Контакты</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="main">
+        <div class="contacts-container">
+            <h1 class="title">Контакты</h1>
+
+            <div class="contacts-block">
+                <p class="contacts-label">Телефон:</p>
+                <a href="tel:+74957613505" class="footer-contact">+7 495 761-35-05</a>
+            </div>
+            <div class="contacts-block">
+                <p class="contacts-label">Почта:</p>
+                <a href="mailto:info@desgruppe.ru" class="footer-contact">info@desgruppe.ru</a>
+            </div>
+            <div class="contacts-block">
+                <p class="contacts-label">Часы работы офиса:</p>
+                <p class="footer-hours">Пн - Пт 9:00 - 19:00</p>
+            </div>
+        </div>
+        <div class="contacts-container-q">
+            <h2 class="title">Задать вопрос</h2>
+
+            <div class="total-send-block">
+                <div class="total-block">
+                    <input type="text" class="total-input total-name" placeholder="Контактное лицо *">
+                </div>
+                <div class="total-block">
+                    <input type="text" class="total-input total-phone" placeholder="Телефон *">
+                </div>
+                <div class="total-block">
+                    <input type="text" class="total-input total-email" placeholder="Эл. почта *">
+                </div>
+                <div class="total-comment-block">
+                    <p class="total-comment-label">Сообщение</p>
+                    <textarea class="total-comment"></textarea>
+                </div>
+                <p class="total-wrong-data hidden">Введите корректные данные</p>
+                <button class="total-send-button">Отправить</button>
+            </div>
+        </div>
+    </main>
+    <footer class="footer">
+
+        <div class="footer-block">
+            <div class="footer-contacts-container">
+                <div class="footer-contacts">
+                    <a href="tel:+74957613505" class="footer-contact">+7 495 761-35-05</a>
+                    <a href="mailto:info@desgruppe.ru" class="footer-contact">info@desgruppe.ru</a>
+                </div>
+                <p class="footer-hours">Пн - Пт 9:00 - 19:00</p>
+                <a href="/contacts" class="footer-contact-us">Напишите нам</a>
+            </div>
+
+            <nav class="footer-nav">
+                <a href="/about" class="footer-nav-a">О компании</a>
+                <a href="/terms" class="footer-nav-a">Условия покупки</a>
+                <!-- <a href="/logistics" class="footer-nav-a">Доставка</a> -->
+            </nav>
+
+        </div>
+
+
+        <div class="footer-block footer-block-colophon">
+            <div class="footer-colophon-container">
+                <a href="/" class="footer-home-link">desGruppe.shop</a>
+                <p class="footer-colophon">© 2025 desgruppe дизайнерские предметы интерьера</p>
+                <a href="/personal-data" class="footer-terms-link">Согласие на обработку <br> персональных данных</a>
+            </div>
+
+            <div class="footer-social-container">
+                <a href="vk.com" class="footer-social-a">
+                    <img src="imgs/icons/vk-black-icon.png" alt="" class="footer-social-icon">
+                </a>
+            </div>
+        </div>
+
+    </footer>
+
+    <div class="cart-bg hidden"></div>
+    <div class="cart-panel">
+        <div class="cart-container">
+            <div class="cart-title-container">
+                <h3 class="cart-title">Корзина</h3>
+                <button class="cart-close-button">×</button>
+            </div>
+
+            <p class="cart-empty-text hidden">Ваша корзина пуста.</p>
+
+            <div class="cart-items-container">
+                <ul class="cart-items">
+                    <!-- <li class="cart-item">
+                        <div class="cart-item-img-container">
+                            <img src="imgs/products/1508p.jpg" alt="" class="cart-item-img">
+                        </div>
+                        <div class="cart-item-name-container">
+                            <p class="cart-item-name">Eames Plastic Armchair DAL</p>
+                            <p class="cart-item-color">Цвет: 37 glacier blue Polypropylene</p>
+                        </div>
+                        <div class="cart-item-price-container">
+                            <p class="cart-item-price-rub">79553 ₽</p>
+                            <p class="cart-item-price-eur">750.5 €</p>
+                        </div>
+                        <div class="cart-item-qty-container">
+                            <div class="cart-item-qty">
+                                <button class="cart-item-qty-less">-</button>
+                                <div class="cart-item-qty-cnt">1</div>
+                                <button class="cart-item-qty-more">+</button>
+                            </div>
+                            <p class="cart-item-remove-button">Удалить</p>
+                        </div>
+                    </li> -->
+                </ul>
+            </div>
+
+            <div class="cart-total-container">
+                <div class="cart-total-text-container">
+                    <p class="cart-total-text">Итого</p>
+                    <p class="cart-total">0 €</p>
+                </div>
+                <div class="cart-button-container">
+                    <button class="go-to-cart-button">Перейти к оформлению</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="static/cart-script.js"></script>
+    <script src="script/user/adaptive.js" defer></script>
+
+</body>
+
+</html>

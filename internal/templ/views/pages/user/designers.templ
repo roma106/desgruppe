@@ -1,0 +1,36 @@
+package pages
+
+import "desgruppe/internal/templ/views/layout"
+import "desgruppe/internal/entities"
+import "strconv"
+
+type DesignersPageProps struct{
+    Designers []entities.Designer
+    Cart layout.UserCart
+}
+
+
+templ DesignersPage(props DesignersPageProps) {
+    @layout.UserPageLayout(layout.UserLayoutProps{
+        Title: "desGruppe - Дизайнеры",
+        Styles: []string{"designers-style.css"},
+        Scripts: []string{},
+        Cart: props.Cart,
+    }){
+        <h1 class="designers-title">Дизайнеры</h1>
+
+        <div class="designers-list-block">
+            <ul class="designers-list">
+            for _, des := range props.Designers{
+                <li class="designers-list-elem">
+                    <a href={"/designer/"+des.Slug} class="designers-elem-a">
+                        <img src={"/designers/getImgBlob/Picture/"+strconv.Itoa(des.ID)} alt="" class="designers-elem-img">
+                        <p class="designers-elem-name">{des.Name}</p>
+                    </a>
+                </li>
+            }
+            </ul>
+        </div>
+    }
+}
+

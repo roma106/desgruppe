@@ -1,0 +1,37 @@
+package pages
+
+import "desgruppe/internal/entities"
+import "desgruppe/internal/templ/views/layout"
+
+type SettingsPageProps struct {
+	Settings entities.Settings
+}
+
+templ SettingsPage(props SettingsPageProps) {
+	@layout.AdminPageLayout(layout.AdminLayoutProps{
+		Title:        "desGruppe admin panel",
+		Scripts:      []string{"settings.js"},
+		WatchingPage: "settings",
+	},
+	) {
+		<div class="main-container">
+			<div class="ex-rate-container">
+				<h1 class="title">Курс валют</h1>
+				<div class="ex-rate-block">
+					<p class="ex-rate-label">1 € = </p>
+					<input type="text" class="ex-rate-input" value={ props.Settings.ExchangeRate }/>
+					<p class="ex-rate-label">₽</p>
+				</div>
+				<button class="add-form-button change-ex-rate">Изменить</button>
+			</div>
+            <div class="ex-rate-container">
+                <h1 class="title">Эл почта администратора</h1>
+                <div class="ex-rate-block">
+                    <p class="ex-rate-label">Почта для получения уведомлений о заказах</p>
+                    <input type="text" class="ex-rate-input email-input" value={ props.Settings.Email } style="width: 240px;"/>
+                </div>
+                <button class="add-form-button change-email">Изменить</button>
+            </div>
+		</div>
+	}
+}

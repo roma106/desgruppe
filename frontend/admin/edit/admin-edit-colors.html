@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/admin/admin-style.css">
+    <title>Color editing</title>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-title-container">
+            <h1 class="header-title"><a href="" class="header-a">desGruppe.shop</a></h1>
+        </div>
+        <div class="header-empty"></div>
+    </header>
+
+    <main class="main">
+        <section class="panel">
+            <h2 class="panel-title">Модули</h2>
+            <ul class="panel-ul">
+                <li class="panel-li"><a href="/admin/sections" class="panel-a">Разделы</a></li>
+                <li class="panel-li" style="color: black"><a href="/admin/colors" class="panel-a"
+                        style="color: black">Цвета</a></li>
+                <li class="panel-li"><a href="/admin/products" class="panel-a">Изделия</a></li>
+                <li class="panel-li"><a href="/admin/designers" class="panel-a">Дизайнеры</a></li>
+                <li class="panel-li"><a href="/admin/producers" class="panel-a">Производители</a></li>
+                <li class="panel-empty-li"></li>
+                <li class="panel-li"><a href="/admin/sales" class="panel-a">Распродажи</a></li>
+                <li class="panel-li"><a href="/admin/available" class="panel-a">Наличие</a></li>
+                <li class="panel-empty-li"></li>
+                <li class="panel-li"><a href="/admin/orders" class="panel-a">Заказы</a></li>
+                <li class="panel-li"><a href="/admin/questions" class="panel-a">Вопросы</a></li>
+                <li class="panel-empty-li"></li>
+                <li class="panel-li"><a href="/admin/exchange-rate" class="panel-a">Курс валюты</a></li>
+            </ul>
+        </section>
+        <div class="main-container">
+            <h1 class="title">Цвета</h1>
+
+            <div class="add-container">
+
+                <h2 class="add-title">Изменить цвет</h2>
+
+                <div class="add-form">
+                    <div class="add-form-block">
+                        <p class="add-form-label">Название</p>
+                        <input type="text" class="add-form-input add-name" required>
+                    </div>
+                    <div class="add-form-block add-radio-block">
+                        <input type="radio" class="add-form-radio add-color-radio" checked>
+                        <p class="add-form-label add-color-radio">Цвет (0088FF)</p>
+                        <input type="text" class="add-form-input add-color add-color-radio">
+                    </div>
+                    <div class="add-form-block add-radio-block">
+                        <input type="radio" class="add-form-radio add-picture-radio">
+                        <p class="add-form-label  add-picture-radio" style="color: gray">Картинка</p>
+                        <input type="file" class="add-form-input add-picture add-picture-radio" disabled>
+                    </div>
+                    <div class="add-form-block">
+                        <p class="add-form-label">Позиция</p>
+                        <input type="number" class="add-form-input add-position" required>
+                    </div>
+                    <div class="add-form-buttons-container">
+                        <button class="close-window-button" onclick="window.close()">Назад</button>
+                        <button class="add-form-button">Изменить</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        let colorRadio = document.querySelectorAll(".add-color-radio");
+        let pictureRadio = document.querySelectorAll(".add-picture-radio");
+
+
+        colorRadio[0].addEventListener("click", () => {
+            pictureRadio[0].checked = false;
+            pictureRadio[2].disabled = true;
+            colorRadio[2].disabled = false;
+            pictureRadio.forEach((radio) => radio.style.color = "gray");
+            colorRadio.forEach((radio) => radio.style.color = "black");
+        })
+
+        pictureRadio[0].addEventListener("click", () => {
+            colorRadio[0].checked = false;
+            colorRadio[2].disabled = true;
+            pictureRadio[2].disabled = false;
+            pictureRadio.forEach((radio) => radio.style.color = "black");
+            colorRadio.forEach((radio) => radio.style.color = "gray");
+        })
+        const colorId = new URLSearchParams(window.location.search).get("id");
+        fetch("/admin/colors/get?id=" + colorId)
+        .then((res) => res.json()).then((color) => {
+            document.querySelector(".add-title").innerHTML = `Изменить цвет ${color.name}`;
+            document.querySelector(".add-name").value = color.name;
+            if (color.code!="") {
+                document.querySelector(".add-color").value = color.code;
+            }else if (color.picture!=""){
+                document.querySelector(".add-picture-radio").checked = true;
+                document.querySelector(".add-picture-radio").disabled = false;
+                document.querySelector(".add-picture").disabled = false;
+                document.querySelector(".add-picture").style.color = "black";
+                document.querySelector("p.add-picture-radio").style.color = "black";
+                document.querySelector("p.add-color-radio").style.color = "gray";
+                document.querySelector(".add-color-radio").style.border = "solid 1px gray";
+                document.querySelector(".add-color-radio").checked = false;
+                document.querySelector(".add-color").disabled = true;
+            }
+            document.querySelector(".add-position").value = color.position;
+        })
+
+        const editButton = document.querySelector(".add-form-button");
+        editButton.addEventListener("click", () => {
+            let colorName = document.querySelector(".add-name").value;
+            let colorCode = document.querySelector(".add-color").value;
+            let colorPicture = document.querySelector(".add-picture").files[0];
+            let colorPosition = document.querySelector(".add-position").value;
+        
+            let colorColorRadio = document.querySelector(".add-color-radio").checked;
+            let colorPictureRadio = document.querySelector(".add-picture-radio").checked;
+        
+            // console.log(colorName, colorColor, colorPicture, colorPosition, colorColorRadio, colorPictureRadio);
+        
+            const reader = new FileReader();
+            if (colorPictureRadio){
+                let data = {
+                    id: Number(colorId),
+                    name: colorName,
+                    code: colorCode,
+                    position: Number(colorPosition),
+                    codeRadio: colorColorRadio,
+                    pictureRadio: colorPictureRadio
+                }
+                if (colorPicture== null || colorPicture.length == 0 || colorPicture == undefined){
+                    EditColor(data);
+                    return
+                }
+                reader.readAsArrayBuffer(colorPicture);
+                reader.onload = () => {
+                    data.picture = Array.from(new Uint8Array(reader.result));
+                    EditColor(data);
+                }
+            }else if (colorColorRadio){
+                let data = {
+                    id: Number(colorId),
+                    name: colorName,
+                    code: colorCode,
+                    position: Number(colorPosition),
+                    codeRadio: colorColorRadio,
+                    pictureRadio: colorPictureRadio
+                }
+                EditColor(data);
+            }
+        })
+        
+        function EditColor(data){
+            console.log(data);
+            fetch("/admin/colors/edit",{
+                method: "PUT",
+                body: JSON.stringify(data),
+            }).then((res) => {
+                if (res.ok){
+                    alert("Цвет успешно изменен!");
+                }else{
+                    alert("Произошла ошибка!");
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>

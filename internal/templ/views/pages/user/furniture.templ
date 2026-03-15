@@ -1,0 +1,229 @@
+package pages
+
+import "desgruppe/internal/templ/views/layout"
+import "desgruppe/internal/entities"
+import "strconv"
+import "strings"
+import "github.com/dustin/go-humanize"
+import "fmt"
+
+type FurniturePageProps struct{
+    Products []entities.Product
+    Designers []entities.Designer
+    Producers []entities.Producer
+    Sections []entities.Section
+    MinPrice int
+    MaxPrice int
+    ExRate float64
+    Type string
+    PageTitle string
+    QueryParams
+    Cart layout.UserCart
+}
+
+type QueryParams struct{
+    DesignerIds []string
+    ProducerIds []string
+    SectionIds []string
+    Available string
+    Sort string
+}
+
+templ FurniturePage(props FurniturePageProps) {
+    @layout.UserPageLayout(layout.UserLayoutProps{
+        Title: "Элитная мебель от мировых мебельных дизайнеров - desGruppe",
+        Styles: []string{"furniture-style.css"},
+        Scripts: []string{"furniture.js"},
+        Cart: props.Cart,
+    }){
+        <ol class="main-breadcrumbs-list">
+            <li class="main-breadcrumbs-li">
+                <a href="/" class="main-breadcrumbs-a">desGruppe</a>
+                <span class="main-breadcrumbs-span">/</span>
+            </li>
+            <li class="main-breadcrumbs-li">
+                <a href={"/"+props.Type} class="main-breadcrumbs-a">{props.PageTitle}</a>
+            </li>
+        </ol>
+        <div class="shop-container">
+            <section class="shop-filters-container">
+                <ul class="shop-filters-ul">
+                    <li class="shop-filter-li">
+                        <button class="shop-filter-button filter-button-sections">
+                            <p class="shop-filter-name">Категории</p>
+                            <div
+                            if (len(props.QueryParams.SectionIds)==1 && props.QueryParams.SectionIds[0]=="")||len(props.QueryParams.SectionIds)==0{
+                                class="shop-filter-img sections-filter-img"
+                            }else{
+                                class="shop-filter-img sections-filter-img shop-filter-img-opened"
+                            }></div>
+                        </button>
+                        <ul 
+                        if (len(props.QueryParams.SectionIds)==1 && props.QueryParams.SectionIds[0]=="") || len(props.QueryParams.SectionIds)==0{
+                            class="filter-sections-hidden shop-filter-sections"
+                        }else{
+                            class="shop-filter-sections"
+                        }>
+                        for _,sec := range props.Sections{
+                            if sec.Type == props.Type{
+                            <li class="shop-filter-section-li">
+                                <div class="shop-filter-section-checkbox" aria-checked="false" id={sec.ID}>
+                                    <div class="shop-filter-section-checkbox-bg hidden"></div>
+                                </div>
+                                <p class="shop-filter-section-label">{sec.Name}</p>
+                            </li>
+                            }
+                        }
+                        </ul>
+                    </li>
+                    <li class="shop-filter-li">
+                        <button class="shop-filter-button filter-button-producers">
+                            <p class="shop-filter-name">Фабрики</p>
+                            <div 
+                            if (len(props.QueryParams.ProducerIds)==1 && props.QueryParams.ProducerIds[0]=="")||len(props.QueryParams.ProducerIds)==0{
+                                class="shop-filter-img producers-filter-img"
+                            }else{
+                                class="shop-filter-img producers-filter-img shop-filter-img-opened"
+                            }></div>
+                        </button>
+                        <ul 
+                        if (len(props.QueryParams.ProducerIds)==1 && props.QueryParams.ProducerIds[0]=="") || len(props.QueryParams.ProducerIds)==0{
+                            class="filter-producers-hidden shop-filter-producers"
+                        }else{
+                            class="shop-filter-producers"
+                        }>
+                        for _,prod := range props.Producers{
+                            <li class="shop-filter-producer-li">
+                                <div class="shop-filter-producer-checkbox" aria-checked="false" id={prod.ID}>
+                                    <div class="shop-filter-producer-checkbox-bg hidden"></div>
+                                </div>
+                                <p class="shop-filter-producer-label">{prod.Name}</p>
+                            </li>
+                        }
+                        </ul>
+                    </li>
+                    <li class="shop-filter-li">
+                        <button class="shop-filter-button filter-button-designers">
+                            <p class="shop-filter-name">Дизайнеры</p>
+                            <div 
+                            if (len(props.QueryParams.DesignerIds)==1 && props.QueryParams.DesignerIds[0]=="")||len(props.QueryParams.DesignerIds)==0{
+                                class="shop-filter-img designers-filter-img"
+                            }else{
+                                class="shop-filter-img designers-filter-img shop-filter-img-opened"
+                            }></div>
+                        </button>
+                        <ul 
+                        if (len(props.QueryParams.DesignerIds)==1 && props.QueryParams.DesignerIds[0]=="") || len(props.QueryParams.DesignerIds)==0{
+                            class="filter-designers-hidden shop-filter-designers"
+                        }else{
+                            class="shop-filter-designers"
+                        }>
+                        for _,des := range props.Designers{
+                            <li class="shop-filter-designer-li">
+                                <div class="shop-filter-designer-checkbox" aria-checked="false" id={des.ID}>
+                                    <div class="shop-filter-designer-checkbox-bg hidden"></div>
+                                </div>
+                                <p class="shop-filter-designer-label">{des.Name}</p>
+                            </li>
+                        }
+                        </ul>
+                    </li>
+                    <li class="shop-filter-li">
+                        <button class="shop-filter-button filter-button-available">
+                            <p class="shop-filter-name">Наличие</p>
+                            <div class="shop-filter-img available-filter-img shop-filter-img-opened"></div>
+                        </button>
+                        <ul class="shop-filter-available">
+                            <li class="shop-filter-available-li">
+                                <div class="shop-filter-available-checkbox" aria-checked="false">
+                                    <div class="shop-filter-available-checkbox-bg hidden"></div>
+                                </div>
+                                <p class="shop-filter-available-label">В наличии</p>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="shop-filter-li">
+                        <button class="shop-filter-button filter-button-price">
+                            <p class="shop-filter-name">Цена</p>
+                            <div class="shop-filter-img price-filter-img shop-filter-img-opened"></div>
+                        </button>
+                        <div class="shop-filter-price">
+                            <div class="filter-price-labels">
+                                <p class="shop-filter-price-label price-label-1">{float64(props.MinPrice)*props.ExRate} ₽</p>
+                                <p class="shop-filter-price-label price-label-2">{float64(props.MaxPrice)*props.ExRate} ₽</p>
+                            </div>
+                            <div class="filter-price-ranges">
+                                <input type="range" class="shop-filter-price-range price-range-1" step=".5" 
+                                min={float64(props.MinPrice)*props.ExRate} max={float64(props.MaxPrice)*props.ExRate-1}
+                                    value={float64(props.MinPrice)*props.ExRate}>
+                                <input type="range" class="shop-filter-price-range price-range-2" step=".5" 
+                                min={float64(props.MinPrice)*props.ExRate+1} max={float64(props.MaxPrice)*props.ExRate}
+                                    value={float64(props.MaxPrice)*props.ExRate}>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <div class="shop-items">
+
+                <h1 class="shop-title">{props.PageTitle}</h1>
+
+                <div class="shop-sort-container">
+                    <div class="shop-toggle-filters">
+                        <img src="imgs/icons/filter-icon.png" alt="" class="shop-toggle-filters-icon">
+                    </div>
+
+                    <div class="shop-sort">
+                        <p class="shop-sort-label">Сортировка:</p>
+                        <img src="imgs/icons/sort-icon.png" alt="" class="shop-sort-icon">
+                        <select class="shop-sort-select" name="shop-sort">
+                            <option value="abc" class="shop-sort-opt" selected?={props.QueryParams.Sort=="abc"}>По алфавиту</option>
+                            <option value="random" class="shop-sort-opt" selected?={props.QueryParams.Sort=="random"}>Случайно</option>
+                            <option value="increasing" class="shop-sort-opt" selected?={props.QueryParams.Sort=="increasing"}>По возрастанию цены</option>
+                            <option value="decreasing" class="shop-sort-opt" selected?={props.QueryParams.Sort=="decreasing"}>По убыванию цены</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="shop-items-all">
+                
+                for _, pr := range props.Products{
+                    if pr.Type == props.Type{
+                    <div class="shop-item">
+                    <a href={"/product/"+pr.Slug} class="shop-item-link">
+                    <img src={"/products/getImgBlob/Photo/"+strconv.Itoa(pr.ID)} alt="" class="shop-item-img">
+                    <div class="shop-item-info-container">
+                        <p class="shop-item-name">{pr.Name}</p>
+                        <div class="shop-item-price-container">
+                            <p class="shop-item-price">{ fmt.Sprint(pr.FreeForm) } {FormatPrice(pr.Price*props.ExRate)}</p>
+                            <span class="shop-item-price-label">₽</span>
+                        </div>
+                    </div>
+                    </a></div>
+                    }
+                }
+
+                </div>
+
+                if len(props.Products)==0{
+                    <p class="shop-no-result">Нет результатов</p>
+                }
+
+            </div>
+        </div>
+        <script>
+        localStorage.setItem("type", {{props.Type}})</script>
+    }
+}
+
+
+
+
+func FormatPrice(value float64) string {
+	// humanize добавляет запятые, заменяем на пробелы
+	intStr := humanize.Commaf(float64(int64(value)))
+	intStr = strings.ReplaceAll(intStr, ",", " ")
+	frac := value - float64(int64(value))
+	return fmt.Sprintf("%s.%02d", intStr, int64(frac*100))
+}
