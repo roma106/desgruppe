@@ -19,8 +19,6 @@ func LoginAdmin(c echo.Context, cfg *config.Config) error {
 	admin := Admin{}
 	login := cfg.AdminLogin
 	password := cfg.AdminPassword
-	// login := "daniil"
-	// password := "031128"
 
 	if err := json.NewDecoder(c.Request().Body).Decode(&admin); err != nil {
 		logger.Error("Error parsing request body to log admin:", err)
